@@ -617,6 +617,9 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADMAILS,
     PLAYER_LOGIN_QUERY_LOADMAILEDITEMS,
     PLAYER_LOGIN_QUERY_BATTLEGROUND_DATA,
+	//ientium@sina.com 小脏手修改
+	//VIPInfo 信息查询	
+	PLAYER_LOGIN_QUERY_LOADVIPINFO,
 
     MAX_PLAYER_LOGIN_QUERY
 };
@@ -728,6 +731,23 @@ class MANGOS_DLL_SPEC PlayerTaxi
 };
 
 std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi);
+
+//ientium@sina.com 小脏手修改
+//VIP用户表信息
+
+struct MemberVIPInfo
+{
+	MemberVIPInfo() : vipcoin(0), generalcoin(0), activateTaxiTime(0), totaltime(0), costvipcoin(0), costgeneralcoin(0), lastupdate(0) {}
+	uint32 vipcoin;
+	uint32 generalcoin;
+	uint32 activateTaxiTime;
+	uint32 totaltime;
+	int32 costvipcoin;  //花费的vipcion
+	int32 costgeneralcoin; //花费的普通generalcoin
+	uint32 lastupdate;//最后查询时间
+};
+
+
 
 /// Holder for BattleGround data
 struct BGData
@@ -917,6 +937,24 @@ class MANGOS_DLL_SPEC Player final: public Unit
             m_summon_y = y;
             m_summon_z = z;
         }
+		//ientium@sina.com 小脏手修改
+		/*********************************************************/
+		/***                  VIP SYSTEM                     ***/
+		/*********************************************************/
+		//VIP相关地图全开
+		MemberVIPInfo memberVInfo;
+
+		uint32 getVipInfo(uint32 uType = 0);
+		uint32 setVipMemberCoin(uint32 coins);
+		uint32 getVipInfoTimeToCoin();  //获取未转化VIP积分的时间
+		uint16 costVipCoin(uint16 uType, uint32 t_coin); //花费积分点函数
+		uint16 setUpdateVIPFlyingTime(uint32 timetamp, uint32 coin);
+		uint16 GetInfoLevel();
+		bool LevelUp(uint16 newlevel, uint32 costcoin);//提升用户等级
+		bool LevelUp(uint16 newlevel);//提升用户等级
+		bool UpdateVIPInfo();  //更新查询信息
+
+
         void SummonIfPossible(bool agree);
 
         bool Create( uint32 guidlow, const std::string& name, uint8 race, uint8 class_, uint8 gender, uint8 skin, uint8 face, uint8 hairStyle, uint8 hairColor, uint8 facialHair, uint8 outfitId );
@@ -1225,7 +1263,16 @@ class MANGOS_DLL_SPEC Player final: public Unit
         void LoadPet();
 
         uint32 m_stableSlots;
+		//ientium@sina.com 小脏手修改
+		/*********************************************************/
+		/***                    VIPInfo信息                    ***/
+		/*********************************************************/
 
+		// 载入 VIPInfo 表信息
+		void Player::_LoadVIPInfo(QueryResult* result);
+		//              用户VIP表保存                 ***/
+
+		void _SaveVIPMemberInfo();
         /*********************************************************/
         /***                    GOSSIP SYSTEM                  ***/
         /*********************************************************/
