@@ -857,6 +857,10 @@ bool GossipSelect_npc_prof_leather(Player* pPlayer, Creature* pCreature, uint32 
     }
     return true;
 }
+/*###
+# VIP商人点数消费
+###*/
+
 
 /*###
 # start menues for GO (engineering and leatherworking)

@@ -1312,6 +1312,11 @@ void Player::Update(uint32 update_diff, uint32 p_time)
         uint32 elapsed = uint32(now - m_Last_tick);
         m_Played_time[PLAYED_TIME_TOTAL] += elapsed;        // Total played time
         m_Played_time[PLAYED_TIME_LEVEL] += elapsed;        // Level played time
+		//ientium@sina.com 小脏手修改
+		//VIPInfo每秒实时添加在线时间
+		if (getLevel() >= 0) {
+			memberVInfo.totaltime = memberVInfo.totaltime += elapsed;
+		}
         m_Last_tick = now;
     }
 
@@ -15021,6 +15026,31 @@ void Player::LoadCorpse()
     }
 }
 
+//ientium@sina.com 小脏手修改
+// 载入 VIPInfo 表信息
+void Player::_LoadVIPInfo(QueryResult* result)
+{
+	if (!result)
+	{
+		return;
+	}
+	Field* fields = result->Fetch();
+	memberVInfo.vipcoin = fields[0].GetUInt32();
+	memberVInfo.generalcoin = fields[1].GetUInt32();
+	if ((time_t)fields[2].GetUInt64() > time(NULL)) {
+		memberVInfo.activateTaxiTime = fields[2].GetUInt32();
+	}
+	else {
+		memberVInfo.activateTaxiTime = 0;
+	}
+
+	memberVInfo.totaltime = fields[3].GetUInt32();
+	memberVInfo.costvipcoin = 0;
+	memberVInfo.costgeneralcoin = 0;
+	delete result;
+}
+
+
 void Player::_LoadInventory(QueryResult *result, uint32 timediff)
 {
     //               0                1      2         3        4      5             6                 7           8     9    10    11   12    13              14
@@ -16034,6 +16064,42 @@ bool Player::SaveAura(SpellAuraHolder* holder, AuraSaveStruct& saveStruct)
     return false;
 }
 
+//ientium@sina.com 小脏手修改
+//VIPInfo表保存函数
+// save player vipinfo
+// 
+void Player::_SaveVIPMemberInfo()
+{
+
+	static SqlStatementID delVIPInfo;
+	static SqlStatementID insVIPInfo;
+
+
+	UpdateVIPInfo();
+
+	SqlStatement stmtDel = CharacterDatabase.CreateStatement(delVIPInfo, "DELETE FROM character_vip WHERE guid = ?");
+	SqlStatement stmtIns = CharacterDatabase.CreateStatement(insVIPInfo, "INSERT INTO character_vip (guid,vipcoin,activateTaxiTime,generalcoin,totaltime) VALUES (?, ?, ?, ?, ?)");
+
+	stmtDel.PExecute(GetGUIDLow());
+	stmtIns.addUInt32(GetGUIDLow());
+	stmtIns.addUInt32(memberVInfo.vipcoin);
+	if (memberVInfo.activateTaxiTime > time(NULL)) {
+		stmtIns.addUInt32(memberVInfo.activateTaxiTime);
+	}
+	else {
+		stmtIns.addUInt32(0);
+	}
+
+	if (getLevel() >= 60) {
+		stmtIns.addUInt32(memberVInfo.generalcoin);
+		stmtIns.addUInt32(memberVInfo.totaltime);
+	}
+	else {
+		stmtIns.addUInt32(0);
+		stmtIns.addUInt32(0);
+	}
+	stmtIns.Execute();
+}
 void Player::_SaveInventory()
 {
     // force items in buyback slots to new state
@@ -20808,4 +20874,20 @@ void Player::CreatePacketBroadcaster()
     // Register player packet queue with the packet broadcaster
     m_broadcaster = std::make_shared<PlayerBroadcaster>(m_session->GetSocket(), GetObjectGuid());
     sWorld.GetBroadcaster()->RegisterPlayer(m_broadcaster);
+}
+
+//ientium@sina.com 小脏手修改
+//查询更新表信息
+bool Player::UpdateVIPInfo() {
+	QueryResult* result = CharacterDatabase.PQuery("SELECT vipcoin,generalcoin FROM character_vip WHERE guid='%u'", GetGUIDLow());
+	if (result)
+	{
+		Field* fields = result->Fetch();
+		memberVInfo.vipcoin = fields[0].GetUInt32() - memberVInfo.costvipcoin;
+		memberVInfo.generalcoin = fields[1].GetUInt32() - memberVInfo.costgeneralcoin;
+		memberVInfo.lastupdate = time(NULL);
+
+	}
+	return true;
+
 }
