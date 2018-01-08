@@ -1313,8 +1313,8 @@ void Player::Update(uint32 update_diff, uint32 p_time)
         m_Played_time[PLAYED_TIME_TOTAL] += elapsed;        // Total played time
         m_Played_time[PLAYED_TIME_LEVEL] += elapsed;        // Level played time
 		//ientium@sina.com 小脏手修改
-		//VIPInfo每秒实时添加在线时间
-		if (getLevel() >= 0) {
+		//VIPInfo 如果角色为最高级。每秒实时添加在线时间
+		if (GetUInt32Value(UNIT_FIELD_LEVEL) >= STRONG_MAX_LEVEL) {
 			memberVInfo.totaltime = memberVInfo.totaltime += elapsed;
 		}
         m_Last_tick = now;
