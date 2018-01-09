@@ -941,7 +941,7 @@ class MANGOS_DLL_SPEC Player final: public Unit
 		/*********************************************************/
 		/***                  VIP SYSTEM                     ***/
 		/*********************************************************/
-		//VIP相关地图全开
+		
 		MemberVIPInfo memberVInfo;
 
 		uint32 getVipInfo(uint32 uType = 0);

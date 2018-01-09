@@ -1315,7 +1315,7 @@ void Player::Update(uint32 update_diff, uint32 p_time)
 		//ientium@sina.com 小脏手修改
 		//VIPInfo 如果角色为最高级。每秒实时添加在线时间
 		if (GetUInt32Value(UNIT_FIELD_LEVEL) >= STRONG_MAX_LEVEL) {
-			memberVInfo.totaltime = memberVInfo.totaltime += elapsed;
+			memberVInfo.totaltime += elapsed;
 		}
         m_Last_tick = now;
     }
@@ -14459,9 +14459,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder)
     m_honorMgr.Load(holder->GetResult(PLAYER_LOGIN_QUERY_LOADHONORCP));
     _LoadBoundInstances(holder->GetResult(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES));
     _LoadBGData(holder->GetResult(PLAYER_LOGIN_QUERY_LOADBGDATA));
-	//ientium@sina.com 小脏手修改
-	//载入VIPInfo信息表
-	_LoadVIPInfo(holder->GetResult(PLAYER_LOGIN_QUERY_LOADVIPINFO));
+
 
     MapEntry const* mapEntry = sMapStorage.LookupEntry<MapEntry>(GetMapId());
 
@@ -14740,6 +14738,10 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder)
     SetFallInformation(0, GetPositionZ());
 
     _LoadSpellCooldowns(holder->GetResult(PLAYER_LOGIN_QUERY_LOADSPELLCOOLDOWNS));
+
+	//ientium@sina.com 小脏手修改
+	//载入VIPInfo信息表
+	_LoadVIPInfo(holder->GetResult(PLAYER_LOGIN_QUERY_LOADVIPINFO));
 
     // Spell code allow apply any auras to dead character in load time in aura/spell/item loading
     // Do now before stats re-calculation cleanup for ghost state unexpected auras
@@ -15045,7 +15047,7 @@ void Player::_LoadVIPInfo(QueryResult* result)
 	Field* fields = result->Fetch();
 	memberVInfo.vipcoin = fields[0].GetUInt32();
 	memberVInfo.generalcoin = fields[1].GetUInt32();
-	if ((time_t)fields[2].GetUInt64() > time(NULL)) {
+	if ((time_t)fields[2].GetUInt32() > time(NULL)) {
 		memberVInfo.activateTaxiTime = fields[2].GetUInt32();
 	}
 	else {

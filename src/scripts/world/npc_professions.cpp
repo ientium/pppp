@@ -865,12 +865,13 @@ bool GossipSelect_npc_prof_leather(Player* pPlayer, Creature* pCreature, uint32 
 # VIP价格定义
 ###*/
 
-#define GOSSIP_SENDER_INQUIRECOIN             60   //查询积分
-#define GOSSIP_SENDER_INSTANTFLIGHT           61   //瞬飞操作
-#define GOSSIP_SENDER_CHANGENAME              62   //改名
-#define GOSSIP_SENDER_LEVELUP                 63   //等级提升
-#define GOSSIP_SENDER_CHANGERACE              64   //修改种族
-
+#define GOSSIP_SENDER_INQUIRECOIN                      60   //查询积分
+#define GOSSIP_SENDER_INSTANTFLIGHT                    61   //瞬飞操作
+#define GOSSIP_SENDER_CHANGENAME                       62   //改名
+#define GOSSIP_SENDER_LEVELUP                          63   //等级提升
+#define GOSSIP_SENDER_CHANGERACE                       64   //修改种族
+#define GOSSIP_SENDER_INQUIRECOIN_CHANGE              601   //修改种族
+#define GOSSIP_SENDER_BACK						       59    //返回
 
 #define C_FLYINGMON_COIN          50           //需要50积分开瞬飞一个月
 #define C_TIMETOCOIN              7200          //每2小时变化1点积分
@@ -878,18 +879,28 @@ bool GossipSelect_npc_prof_leather(Player* pPlayer, Creature* pCreature, uint32 
 #define C_CHANGENAME_COIN         300           //改名需要300点
 #define C_LEVELUP_COIN            10          //提升一级需要的点数
 #define C_MAXLEVEL_COIN           500          //直接满级需要点数
-
-#define GOSSIP_VIP_TEXT_INQUIRECOIN         "我想要查询我的积分"
-#define GOSSIP_VIP_TEXT_INSTANTFLIGHT       "我想要了解瞬飞的事"
-#define GOSSIP_VIP_TEXT_CHANGENAME          "我想要修改名字"
-#define GOSSIP_VIP_TEXT_LEVELUP             "我想要提升等级"
-#define GOSSIP_VIP_TEXT_CHANGERACE          "我想要改变种族"
-#define GOSSIP_VIP_TEXT_VENDOR              "查看出售物品"
+	
+#define GOSSIP_VIP_TEXT_INQUIRECOIN					"我想要查询我的积分"
+#define GOSSIP_VIP_TEXT_INSTANTFLIGHT				"我想要了解瞬飞的事"
+#define GOSSIP_VIP_TEXT_CHANGENAME					"我想要修改名字"
+#define GOSSIP_VIP_TEXT_LEVELUP						"我想要提升等级"
+#define GOSSIP_VIP_TEXT_CHANGERACE					"我想要改变种族"
+#define GOSSIP_VIP_TEXT_BACK						"返回"
+#define GOSSIP_VIP_TEXT_VENDOR                      "查看出售物品"
+#define GOSSIP_VIP_TEXT_INQUIRECOIN_CHANGE          "现在转换积分"
 
 /*###
 # start menues for VIPNPC (engineering and leatherworking)
 ###*/
+void SendChildMenu_INQUIRECOIN(Player* pPlayer, Creature* pCreature) {
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN_CHANGE, GOSSIP_SENDER_INQUIRECOIN_CHANGE, GOSSIP_ACTION_INFO_DEF + 1);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_BACK, GOSSIP_SENDER_BACK, GOSSIP_ACTION_INFO_DEF + 2);
+	char sMessage[200];
+	sprintf(sMessage, "尊敬的%s勇士，您的剩余积分为%d,未转化积分为%d", pPlayer->GetName(), pPlayer->getVipInfo(4), pPlayer->getVipInfoTimeToCoin() / C_TIMETOCOIN);
+	pPlayer->SEND_GOSSIP_TEXT(sMessage);
+	pPlayer->SEND_GOSSIP_MENU(0x7FFFFFFF, pCreature->GetGUID()); //80001为VIP商人菜单
 
+}
 bool GossipHello_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature)
 {
 
@@ -904,9 +915,8 @@ bool GossipHello_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature)
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_VIP_TEXT_VENDOR, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
 		char sMessage[200];
 		sprintf(sMessage, "欢迎您， %s !", pPlayer->GetName());
-
 		pPlayer->SEND_GOSSIP_TEXT(sMessage);
-		pPlayer->SEND_GOSSIP_MENU(80001, pCreature->GetGUID()); //80001为VIP商人菜单
+		pPlayer->SEND_GOSSIP_MENU(0x7FFFFFFF, pCreature->GetGUID()); //80001为VIP商人菜单
 		return true;
 	}
 }
@@ -915,7 +925,7 @@ bool GossipSelect_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature, uint32 u
 	switch (uiSender)
 	{
 	case GOSSIP_SENDER_INQUIRECOIN:   //查询积分
-		SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
+		SendChildMenu_INQUIRECOIN(pPlayer, pCreature);
 		break;
 	case GOSSIP_SENDER_INSTANTFLIGHT:  //瞬飞
 		SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
