@@ -78,8 +78,13 @@ extern uint32 GetSkillLevel(Player* pPlayer,uint32 skill);
 #define ADD_GOSSIP_ITEM(a, b, c, d)   PlayerTalkClass->GetGossipMenu().AddMenuItem(a, b, c, d)
 #define ADD_GOSSIP_ITEM_EXTENDED(a, b, c, d, e, f)   PlayerTalkClass->GetGossipMenu().AddMenuItem(a, b, c, d, e, f)
 
+
 // This fuction Sends the current menu to show to client, a - NPCTEXTID(uint32) , b - npc guid(uint64)
 #define SEND_GOSSIP_MENU(a, b)      PlayerTalkClass->SendGossipMenu(a, b)
+
+
+// This fuction Sends the current menu to show to client, a - NPCTEXTID(uint32) , b - npc guid(uint64)
+#define SEND_GOSSIP_TEXT(a)      PlayerTalkClass->SendText(a)
 
 // This fuction shows POI(point of interest) to client.
 // a - position X

@@ -137,9 +137,6 @@ there is no difference here (except that default text is chosen with `gameobject
 #define S_LEARN_GOBLIN          20221
 #define S_LEARN_GNOMISH         20220
 
-
-
-
 /*###
 # formulas to calculate unlearning cost
 ###*/
@@ -709,9 +706,6 @@ bool GossipSelect_npc_engineering_tele_trinket(Player* pPlayer, Creature* pCreat
 	return true;
 }
 
-
-
-
 /*###
 # start menues leatherworking
 ###*/
@@ -899,15 +893,19 @@ bool GossipSelect_npc_prof_leather(Player* pPlayer, Creature* pCreature, uint32 
 bool GossipHello_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature)
 {
 
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INSTANTFLIGHT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGERACE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN, GOSSIP_SENDER_INQUIRECOIN, GOSSIP_ACTION_INFO_DEF + 1);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INSTANTFLIGHT, GOSSIP_SENDER_INSTANTFLIGHT, GOSSIP_ACTION_INFO_DEF + 2);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME, GOSSIP_SENDER_CHANGENAME, GOSSIP_ACTION_INFO_DEF + 3);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGERACE, GOSSIP_SENDER_CHANGERACE, GOSSIP_ACTION_INFO_DEF + 4);
 	if (pPlayer->getLevel() < 60) {
 		{
-			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_LEVELUP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_LEVELUP, GOSSIP_SENDER_LEVELUP, GOSSIP_ACTION_INFO_DEF + 5);
 		}
-		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_VIP_TEXT_INQUIRECOIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_VIP_TEXT_VENDOR, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+		char sMessage[200];
+		sprintf(sMessage, "欢迎您， %s !", pPlayer->GetName());
+
+		pPlayer->SEND_GOSSIP_TEXT(sMessage);
 		pPlayer->SEND_GOSSIP_MENU(80001, pCreature->GetGUID()); //80001为VIP商人菜单
 		return true;
 	}
@@ -916,11 +914,8 @@ bool GossipSelect_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature, uint32 u
 {
 	switch (uiSender)
 	{
-	case GOSSIP_SENDER_MAIN:
-		SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
-		break;
 	case GOSSIP_SENDER_INQUIRECOIN:   //查询积分
-		SendConfirmUnlearn_npc_prof_leather(pPlayer, pCreature, uiAction);
+		SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
 		break;
 	case GOSSIP_SENDER_INSTANTFLIGHT:  //瞬飞
 		SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
@@ -937,6 +932,7 @@ bool GossipSelect_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature, uint32 u
 	}
 	return true;
 }
+
 
 /*###
 # start menues for GO (engineering and leatherworking)
@@ -975,14 +971,13 @@ void AddSC_npc_professions()
 	newscript->pGossipHello = &GossipHello_npc_prof_leather;
 	newscript->pGossipSelect = &GossipSelect_npc_prof_leather;
 	newscript->RegisterSelf();
-
+	
+	
 	newscript = new Script;
 	newscript->Name = "npc_prof_vipnpc";
-	newscript->pGossipHello = &GossipHello_npc_prof_vipnpc;
+	newscript->pGossipHello = &GossipHello_npc_prof_vipnpc; //主菜单
 	newscript->pGossipSelect = &GossipSelect_npc_prof_vipnpc;
 	newscript->RegisterSelf();
-
-
 	/*newscript = new Script;
 	newscript->Name = "go_soothsaying_for_dummies";
 	newscript->pGOHello =  &GOHello_go_soothsaying_for_dummies;
