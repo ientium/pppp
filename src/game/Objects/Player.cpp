@@ -1314,7 +1314,7 @@ void Player::Update(uint32 update_diff, uint32 p_time)
         m_Played_time[PLAYED_TIME_LEVEL] += elapsed;        // Level played time
 		//ientium@sina.com 小脏手修改
 		//VIPInfo 如果角色为最高级。每秒实时添加在线时间
-		if (GetUInt32Value(UNIT_FIELD_LEVEL) >= STRONG_MAX_LEVEL) {
+		if (GetUInt32Value(UNIT_FIELD_LEVEL) >= DEFAULT_MAX_LEVEL) {
 			memberVInfo.totaltime += elapsed;
 		}
         m_Last_tick = now;
@@ -15042,22 +15042,25 @@ void Player::_LoadVIPInfo(QueryResult* result)
 {
 	if (!result)
 	{
+		
 		return;
 	}
-	Field* fields = result->Fetch();
-	memberVInfo.vipcoin = fields[0].GetUInt32();
-	memberVInfo.generalcoin = fields[1].GetUInt32();
-	if ((time_t)fields[2].GetUInt32() > time(NULL)) {
-		memberVInfo.activateTaxiTime = fields[2].GetUInt32();
-	}
 	else {
-		memberVInfo.activateTaxiTime = 0;
-	}
+		Field* fields = result->Fetch();
+		memberVInfo.vipcoin = fields[0].GetUInt32();
+		memberVInfo.generalcoin = fields[1].GetUInt32();
+		if ((time_t)fields[2].GetUInt32() > time(NULL)) {
+			memberVInfo.activateTaxiTime = fields[2].GetUInt32();
+		}
+		else {
+			memberVInfo.activateTaxiTime = 0;
+		}
 
-	memberVInfo.totaltime = fields[3].GetUInt32();
-	memberVInfo.costvipcoin = 0;
-	memberVInfo.costgeneralcoin = 0;
-	delete result;
+		memberVInfo.totaltime = fields[3].GetUInt32();
+		memberVInfo.costvipcoin = 0;
+		memberVInfo.costgeneralcoin = 0;
+		
+	}
 }
 
 
@@ -20966,7 +20969,7 @@ uint32 Player::setVipMemberCoin(uint32 coins) {
 		return -1;
 	}
 	DEBUG_LOG("WORLD: 设定VIP时长 %d", coins);
-	if (getLevel() >= 60) {
+	if (getLevel() >= DEFAULT_MAX_LEVEL) {
 		uint32 vcoin = memberVInfo.totaltime / coins;
 		memberVInfo.generalcoin = memberVInfo.generalcoin + vcoin;                    //计算出获得几个积分
 		memberVInfo.costgeneralcoin = memberVInfo.costgeneralcoin - vcoin;
@@ -21097,9 +21100,9 @@ bool Player::LevelUp(uint16 tlevel, uint32 costcoin) {
 	DEBUG_LOG("用户的等级是%d", GetUInt32Value(UNIT_FIELD_LEVEL));
 	int32 oldlevel = GetUInt32Value(UNIT_FIELD_LEVEL);
 	int32 newlevel = oldlevel + tlevel;
-	if (newlevel > STRONG_MAX_LEVEL)                        // hardcoded maximum level
+	if (newlevel > DEFAULT_MAX_LEVEL)                        // hardcoded maximum level
 	{
-		newlevel = STRONG_MAX_LEVEL;
+		newlevel = DEFAULT_MAX_LEVEL;
 	}
 	costVipCoin(2, costcoin); //扣积分
 	GiveLevel(newlevel);

@@ -893,6 +893,7 @@ bool GossipSelect_npc_prof_leather(Player* pPlayer, Creature* pCreature, uint32 
 # start menues for VIPNPC (engineering and leatherworking)
 ###*/
 void SendChildMenu_INQUIRECOIN(Player* pPlayer, Creature* pCreature) {
+	
 	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN_CHANGE, GOSSIP_SENDER_INQUIRECOIN_CHANGE, GOSSIP_ACTION_INFO_DEF + 1);
 	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_BACK, GOSSIP_SENDER_BACK, GOSSIP_ACTION_INFO_DEF + 2);
 	char sMessage[200];
@@ -903,7 +904,7 @@ void SendChildMenu_INQUIRECOIN(Player* pPlayer, Creature* pCreature) {
 }
 bool GossipHello_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature)
 {
-
+	sLog.outDebug("==========================================================打开菜单选项.");
 	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN, GOSSIP_SENDER_INQUIRECOIN, GOSSIP_ACTION_INFO_DEF + 1);
 	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INSTANTFLIGHT, GOSSIP_SENDER_INSTANTFLIGHT, GOSSIP_ACTION_INFO_DEF + 2);
 	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME, GOSSIP_SENDER_CHANGENAME, GOSSIP_ACTION_INFO_DEF + 3);
