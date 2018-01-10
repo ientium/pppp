@@ -41,6 +41,7 @@ void AddSC_go_scripts();
 void AddSC_guards();
 void AddSC_npc_professions();
 void AddSC_npcs_special();
+void AddSC_npc_vip();
 void AddSC_Totems();
 void AddSC_world_event_naxxramas();
 void AddSC_event_scourge_invasion();
@@ -314,6 +315,7 @@ void AddScripts()
     AddSC_guards();
     AddSC_npc_professions();
     AddSC_npcs_special();
+	AddSC_npc_vip();
     AddSC_Totems();
     AddSC_world_event_naxxramas();
     AddSC_event_scourge_invasion();
