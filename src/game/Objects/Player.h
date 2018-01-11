@@ -944,7 +944,7 @@ class MANGOS_DLL_SPEC Player final: public Unit
 		
 		MemberVIPInfo memberVInfo;
 
-		uint32 getVipInfo(uint32 uType = 0);
+		uint32 getVipInfo(int uType = -1);
 		uint32 setVipMemberCoin(uint32 coins);
 		uint32 getVipInfoTimeToCoin();  //获取未转化VIP积分的时间
 		uint16 costVipCoin(uint16 uType, uint32 t_coin); //花费积分点函数

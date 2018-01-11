@@ -20920,7 +20920,7 @@ void Player::CreatePacketBroadcaster()
 //******************************************************************************************
 // utype=0 为总coin 1为赠送coin
 //******************************************************************************************
-uint32 Player::getVipInfo(uint32 uType)
+uint32 Player::getVipInfo(int uType)
 {
 	if (time(NULL) - memberVInfo.lastupdate >= 30) {
 		UpdateVIPInfo();
@@ -20949,7 +20949,7 @@ uint32 Player::getVipInfo(uint32 uType)
 		return  memberVInfo.totaltime;
 		break;
 
-	case 4: // 充值VIP积分和时间VIP积分的和
+	case -1: // 充值VIP积分和时间VIP积分的和
 
 		DEBUG_LOG("WORLD: 设定VIP时长 111");
 		return  memberVInfo.vipcoin + memberVInfo.generalcoin;

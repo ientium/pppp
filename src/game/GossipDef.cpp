@@ -344,11 +344,11 @@ void PlayerMenu::SendTalking(char const * title, char const * text)
 
     DEBUG_LOG("WORLD: Sent SMSG_NPC_TEXT_UPDATE ");
 }
-//ientium@sina.com Ğ¡ÔàÊÖĞŞ¸Ä
+//ientium@sina.com å°è„æ‰‹ä¿®æ”¹
 void PlayerMenu::SendText(char const * text)
 {
 	WorldPacket data(SMSG_NPC_TEXT_UPDATE, 100);             // guess size
-	data << uint32(0);
+	data << uint32(0x7FFFFFFF);
 	for (uint32 i = 0; i < 8; ++i)
 	{
 		data << float(0);
