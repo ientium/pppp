@@ -617,8 +617,8 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADMAILS,
     PLAYER_LOGIN_QUERY_LOADMAILEDITEMS,
     PLAYER_LOGIN_QUERY_BATTLEGROUND_DATA,
-	//ientium@sina.com –°‘‡ ÷–ﬁ∏ƒ
-	//VIPInfo –≈œ¢≤È—Ø	
+	//ientium@sina.com Â∞èËÑèÊâã‰øÆÊîπ
+	//VIPInfo ‰ø°ÊÅØÊü•ËØ¢	
 	PLAYER_LOGIN_QUERY_LOADVIPINFO,
 
     MAX_PLAYER_LOGIN_QUERY
@@ -732,8 +732,8 @@ class MANGOS_DLL_SPEC PlayerTaxi
 
 std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi);
 
-//ientium@sina.com –°‘‡ ÷–ﬁ∏ƒ
-//VIP”√ªß±Ì–≈œ¢
+//ientium@sina.com Â∞èËÑèÊâã‰øÆÊîπ
+//VIPÁî®Êà∑Ë°®‰ø°ÊÅØ
 
 struct MemberVIPInfo
 {
@@ -742,9 +742,9 @@ struct MemberVIPInfo
 	uint32 generalcoin;
 	uint32 activateTaxiTime;
 	uint32 totaltime;
-	int32 costvipcoin;  //ª®∑—µƒvipcion
-	int32 costgeneralcoin; //ª®∑—µƒ∆’Õ®generalcoin
-	uint32 lastupdate;//◊Ó∫Û≤È—Ø ±º‰
+	int32 costvipcoin;  //Ëä±Ë¥πÁöÑvipcion
+	int32 costgeneralcoin; //Ëä±Ë¥πÁöÑÊôÆÈÄögeneralcoin
+	uint32 lastupdate;//ÊúÄÂêéÊü•ËØ¢Êó∂Èó¥
 };
 
 
@@ -937,7 +937,7 @@ class MANGOS_DLL_SPEC Player final: public Unit
             m_summon_y = y;
             m_summon_z = z;
         }
-		//ientium@sina.com –°‘‡ ÷–ﬁ∏ƒ
+		//ientium@sina.com Â∞èËÑèÊâã‰øÆÊîπ
 		/*********************************************************/
 		/***                  VIP SYSTEM                     ***/
 		/*********************************************************/
@@ -946,13 +946,13 @@ class MANGOS_DLL_SPEC Player final: public Unit
 
 		uint32 getVipInfo(uint32 uType = 0);
 		uint32 setVipMemberCoin(uint32 coins);
-		uint32 getVipInfoTimeToCoin();  //ªÒ»°Œ¥◊™ªØVIPª˝∑÷µƒ ±º‰
-		uint16 costVipCoin(uint16 uType, uint32 t_coin); //ª®∑—ª˝∑÷µ„∫Ø ˝
+		uint32 getVipInfoTimeToCoin();  //Ëé∑ÂèñÊú™ËΩ¨ÂåñVIPÁßØÂàÜÁöÑÊó∂Èó¥
+		uint16 costVipCoin(uint16 uType, uint32 t_coin); //Ëä±Ë¥πÁßØÂàÜÁÇπÂáΩÊï∞
 		uint16 setUpdateVIPFlyingTime(uint32 timetamp, uint32 coin);
 		uint16 GetInfoLevel();
-		bool LevelUp(uint16 newlevel, uint32 costcoin);//Ã·…˝”√ªßµ»º∂
-		bool LevelUp(uint16 newlevel);//Ã·…˝”√ªßµ»º∂
-		bool UpdateVIPInfo();  //∏¸–¬≤È—Ø–≈œ¢
+		bool LevelUp(uint16 newlevel, uint32 costcoin);//ÊèêÂçáÁî®Êà∑Á≠âÁ∫ß
+		bool LevelUp(uint16 newlevel);//ÊèêÂçáÁî®Êà∑Á≠âÁ∫ß
+		bool UpdateVIPInfo();  //Êõ¥Êñ∞Êü•ËØ¢‰ø°ÊÅØ
 
 
         void SummonIfPossible(bool agree);
@@ -1263,14 +1263,14 @@ class MANGOS_DLL_SPEC Player final: public Unit
         void LoadPet();
 
         uint32 m_stableSlots;
-		//ientium@sina.com –°‘‡ ÷–ﬁ∏ƒ
+		//ientium@sina.com Â∞èËÑèÊâã‰øÆÊîπ
 		/*********************************************************/
-		/***                    VIPInfo–≈œ¢                    ***/
+		/***                    VIPInfo‰ø°ÊÅØ                    ***/
 		/*********************************************************/
 
-		// ‘ÿ»Î VIPInfo ±Ì–≈œ¢
+		// ËΩΩÂÖ• VIPInfo Ë°®‰ø°ÊÅØ
 		void Player::_LoadVIPInfo(QueryResult* result);
-		//              ”√ªßVIP±Ì±£¥Ê                 ***/
+		//              Áî®Êà∑VIPË°®‰øùÂ≠ò                 ***/
 
 		void _SaveVIPMemberInfo();
         /*********************************************************/

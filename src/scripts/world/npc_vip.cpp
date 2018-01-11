@@ -37,87 +37,120 @@ there is no difference here (except that default text is chosen with `gameobject
 
 
 /*############################################################################################################
-# VIPÉÌÈËµãÊýÏû·Ñ
+# VIPå•†äººç‚¹æ•°æ¶ˆè´¹
 ############################################################################################################*/
 
 /*###
-# VIP¼Û¸ñ¶¨Òå
+# VIPä»·æ ¼å®šä¹‰
 ###*/
 
-#define GOSSIP_SENDER_INQUIRECOIN                      60   //²éÑ¯»ý·Ö
-#define GOSSIP_SENDER_INSTANTFLIGHT                    61   //Ë²·É²Ù×÷
-#define GOSSIP_SENDER_CHANGENAME                       62   //¸ÄÃû
-#define GOSSIP_SENDER_LEVELUP                          63   //µÈ¼¶ÌáÉý
-#define GOSSIP_SENDER_CHANGERACE                       64   //ÐÞ¸ÄÖÖ×å
-#define GOSSIP_SENDER_INQUIRECOIN_CHANGE              601   //ÐÞ¸ÄÖÖ×å
-#define GOSSIP_SENDER_BACK						       59    //·µ»Ø
+#define GOSSIP_SENDER_INQUIRECOIN                      60   //æŸ¥è¯¢ç§¯åˆ†
+#define GOSSIP_SENDER_INSTANTFLIGHT                    61   //çž¬é£žæ“ä½œ
+#define GOSSIP_SENDER_CHANGENAME                       62   //æ”¹å
+#define GOSSIP_SENDER_LEVELUP                          63   //ç­‰çº§æå‡
+#define GOSSIP_SENDER_CHANGERACE                       64   //ä¿®æ”¹ç§æ—
+#define GOSSIP_SENDER_INQUIRECOIN_CHANGE              601   //ä¿®æ”¹ç§¯åˆ†
+#define GOSSIP_SENDER_BACK						       59    //è¿”å›ž
 
-#define C_FLYINGMON_COIN          50           //ÐèÒª50»ý·Ö¿ªË²·ÉÒ»¸öÔÂ
-#define C_TIMETOCOIN              7200          //Ã¿2Ð¡Ê±±ä»¯1µã»ý·Ö
-#define C_FLYINGMONSECOND         2592000       //Ë²·É30ÌìµÄÃëÊý
-#define C_CHANGENAME_COIN         300           //¸ÄÃûÐèÒª300µã
-#define C_LEVELUP_COIN            10          //ÌáÉýÒ»¼¶ÐèÒªµÄµãÊý
-#define C_MAXLEVEL_COIN           500          //Ö±½ÓÂú¼¶ÐèÒªµãÊý
-	
-#define GOSSIP_VIP_TEXT_INQUIRECOIN					"ÎÒÏëÒª²éÑ¯ÎÒµÄ»ý·Ö"
-#define GOSSIP_VIP_TEXT_INSTANTFLIGHT				"ÎÒÏëÒªÁË½âË²·ÉµÄÊÂ"
-#define GOSSIP_VIP_TEXT_CHANGENAME					"ÎÒÏëÒªÐÞ¸ÄÃû×Ö"
-#define GOSSIP_VIP_TEXT_LEVELUP						"ÎÒÏëÒªÌáÉýµÈ¼¶"
-#define GOSSIP_VIP_TEXT_CHANGERACE					"ÎÒÏëÒª¸Ä±äÖÖ×å"
-#define GOSSIP_VIP_TEXT_BACK						"·µ»Ø"
-#define GOSSIP_VIP_TEXT_VENDOR                      "²é¿´³öÊÛÎïÆ·"
-#define GOSSIP_VIP_TEXT_INQUIRECOIN_CHANGE          "ÏÖÔÚ×ª»»»ý·Ö"
+#define C_FLYINGMON_COIN          50           //éœ€è¦50ç§¯åˆ†å¼€çž¬é£žä¸€ä¸ªæœˆ
+#define C_TIMETOCOIN              7200          //æ¯2å°æ—¶å˜åŒ–1ç‚¹ç§¯åˆ†
+#define C_FLYINGMONSECOND         2592000       //çž¬é£ž30å¤©çš„ç§’æ•°
+#define C_CHANGENAME_COIN         300           //æ”¹åéœ€è¦300ç‚¹
+#define C_LEVELUP_COIN            10          //æå‡ä¸€çº§éœ€è¦çš„ç‚¹æ•°
+#define C_MAXLEVEL_COIN           500          //ç›´æŽ¥æ»¡çº§éœ€è¦ç‚¹æ•°
+
+
+#define GOSSIP_VIP_TEXT_INQUIRECOIN					"æˆ‘æƒ³æŸ¥è¯¢æˆ‘çš„ç§¯åˆ†"
+#define GOSSIP_VIP_TEXT_INSTANTFLIGHT				"æˆ‘æƒ³äº†è§£çž¬é£žçš„äº‹"
+#define GOSSIP_VIP_TEXT_CHANGENAME					"æˆ‘æƒ³ä¿®æ”¹åå­—"
+#define GOSSIP_VIP_TEXT_LEVELUP						"æˆ‘æƒ³æå‡ç­‰çº§"
+#define GOSSIP_VIP_TEXT_CHANGERACE					"æˆ‘æƒ³æ”¹å˜ç§æ—"
+#define GOSSIP_VIP_TEXT_BACK						"è¿”å›ž"
+#define GOSSIP_VIP_TEXT_VENDOR                      "æŸ¥çœ‹å‡ºå”®ç‰©å“"
+#define GOSSIP_VIP_TEXT_INQUIRECOIN_CHANGE          "çŽ°åœ¨è½¬æ¢ç§¯åˆ†"
 
 /*###
 # start menues for VIPNPC (engineering and leatherworking)
 ###*/
-void SendChildMenu_INQUIRECOIN(Player* pPlayer, Creature* pCreature) {
+void SendChildMenu_INQUIRECOIN(Player* pPlayer, Creature* pCreature, uint32 uiAction) {
+	switch (uiAction)
+	{
+		case 1:
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN_CHANGE, GOSSIP_SENDER_INQUIRECOIN, GOSSIP_SENDER_INQUIRECOIN_CHANGE);
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_BACK, GOSSIP_SENDER_INQUIRECOIN, GOSSIP_SENDER_BACK);
+			char sMessage[200];
+			sprintf(sMessage, "å°Šæ•¬çš„ %s å‹‡å£«ï¼Œæ‚¨çš„å‰©ä½™ç§¯åˆ†ä¸º%d,æœªè½¬åŒ–ç§¯åˆ†ä¸º%d.", pPlayer->GetName(), pPlayer->getVipInfo(4), pPlayer->getVipInfoTimeToCoin() / C_TIMETOCOIN);
+			pPlayer->SEND_GOSSIP_TEXT(sMessage);
+			pPlayer->SEND_GOSSIP_MENU(0x7FFFFFFF, pCreature->GetGUID()); //80001ä¸ºVIPå•†äººèœå•
+		break;
+		case GOSSIP_SENDER_INQUIRECOIN_CHANGE:
+			pPlayer->setVipMemberCoin(C_TIMETOCOIN);  //æ¯7200ç§’è½¬æ¢1åˆ†
+		break;
+	}
 	
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN_CHANGE, GOSSIP_SENDER_INQUIRECOIN_CHANGE, GOSSIP_ACTION_INFO_DEF + 1);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_BACK, GOSSIP_SENDER_BACK, GOSSIP_ACTION_INFO_DEF + 2);
+
+}
+//è¿”å›žæ“ä½œ
+void SendChildMenu_GOBACK(Player* pPlayer, Creature* pCreature) {
+	
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN, GOSSIP_SENDER_INQUIRECOIN, 1);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INSTANTFLIGHT, GOSSIP_SENDER_INSTANTFLIGHT, 2);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME, GOSSIP_SENDER_CHANGENAME, 3);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGERACE, GOSSIP_SENDER_CHANGERACE, 4);
+	if (pPlayer->getLevel() <= DEFAULT_MAX_LEVEL)
+	{
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_LEVELUP, GOSSIP_SENDER_LEVELUP, 5);
+	}
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_VIP_TEXT_VENDOR, GOSSIP_ACTION_TRADE, 6);
 	char sMessage[200];
-	sprintf(sMessage, "×ð¾´µÄ%sÓÂÊ¿£¬ÄúµÄÊ£Óà»ý·ÖÎª%d,Î´×ª»¯»ý·ÖÎª%d", pPlayer->GetName(), pPlayer->getVipInfo(4), pPlayer->getVipInfoTimeToCoin() / C_TIMETOCOIN);
+	sprintf(sMessage, "æ¬¢è¿Žæ‚¨ï¼Œ %s !", pPlayer->GetName());
 	pPlayer->SEND_GOSSIP_TEXT(sMessage);
-	pPlayer->SEND_GOSSIP_MENU(0x7FFFFFFF, pCreature->GetGUID()); //80001ÎªVIPÉÌÈË²Ëµ¥
+	pPlayer->SEND_GOSSIP_MENU(0x7FFFFFFF, pCreature->GetGUID()); //80001ä¸ºVIPå•†äººèœå•
+
+
 
 }
 bool GossipHello_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature)
 {
-	sLog.outDebug("==========================================================´ò¿ª²Ëµ¥Ñ¡Ïî.");
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN, GOSSIP_SENDER_MAIN, GOSSIP_SENDER_INQUIRECOIN);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INSTANTFLIGHT, GOSSIP_SENDER_MAIN, GOSSIP_SENDER_INSTANTFLIGHT);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME, GOSSIP_SENDER_MAIN, GOSSIP_SENDER_CHANGENAME);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGERACE, GOSSIP_SENDER_MAIN, GOSSIP_SENDER_CHANGERACE);
-	if (pPlayer->getLevel() < 60) {
+
+	
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN, GOSSIP_SENDER_INQUIRECOIN,1);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INSTANTFLIGHT, GOSSIP_SENDER_INSTANTFLIGHT,2);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME,  GOSSIP_SENDER_CHANGENAME,3);
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGERACE, GOSSIP_SENDER_CHANGERACE,4);
+	if (pPlayer->getLevel() <= DEFAULT_MAX_LEVEL)
 	{
-		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_LEVELUP, GOSSIP_SENDER_MAIN, GOSSIP_SENDER_LEVELUP);
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_LEVELUP,GOSSIP_SENDER_LEVELUP,5);
 	}
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_VIP_TEXT_VENDOR, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
-		//char sMessage[200];
-		//sprintf(sMessage, "»¶Ó­Äú£¬ %s !", pPlayer->GetName());
-		//pPlayer->SEND_GOSSIP_TEXT(sMessage);
-		pPlayer->SEND_GOSSIP_MENU(0x7FFFFFFF, pCreature->GetGUID()); //80001ÎªVIPÉÌÈË²Ëµ¥
-		return true;
-	}
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_VIP_TEXT_VENDOR, GOSSIP_ACTION_TRADE,6);
+	char sMessage[200];
+	sprintf(sMessage, "æ¬¢è¿Žæ‚¨ï¼Œ %s !", pPlayer->GetName());
+	pPlayer->SEND_GOSSIP_TEXT(sMessage);
+	pPlayer->SEND_GOSSIP_MENU(0x7FFFFFFF, pCreature->GetGUID()); //80001ä¸ºVIPå•†äººèœå•
+	return true;
+
 }
 bool GossipSelect_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
 	switch (uiSender)
 	{
-	case GOSSIP_SENDER_INQUIRECOIN:   //²éÑ¯»ý·Ö
-		SendChildMenu_INQUIRECOIN(pPlayer, pCreature);
+	case GOSSIP_SENDER_INQUIRECOIN:   //æŸ¥è¯¢ç§¯åˆ†
+		SendChildMenu_INQUIRECOIN(pPlayer, pCreature,uiAction);
 		break;
-	case GOSSIP_SENDER_INSTANTFLIGHT:  //Ë²·É
+	case GOSSIP_SENDER_INSTANTFLIGHT:  //çž¬é£ž
 		//SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
 		break;
-	case GOSSIP_SENDER_CHANGENAME:     //¸ÄÃû
+	case GOSSIP_SENDER_CHANGENAME:     //æ”¹å
 		//SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
 		break;
-	case GOSSIP_SENDER_CHANGERACE:     //ÐÞ¸ÄÖÖ×å
+	case GOSSIP_SENDER_CHANGERACE:     //ä¿®æ”¹ç§æ—
 		//SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
 		break;
-	case GOSSIP_SENDER_LEVELUP:        //Éý¼¶
+	case GOSSIP_SENDER_LEVELUP:        //å‡çº§
 		//SendActionMenu_npc_prof_leather(pPlayer, pCreature, uiAction);
+		break;
+	case  GOSSIP_SENDER_BACK:        //è¿”å›ž
+		SendChildMenu_GOBACK(pPlayer,pCreature);
 		break;
 	}
 	return true;
@@ -144,12 +177,9 @@ void AddSC_npc_vip()
 {
 	Script *newscript;
 
-
-	
-	
 	newscript = new Script;
 	newscript->Name = "npc_prof_vipnpc";
-	newscript->pGossipHello = &GossipHello_npc_prof_vipnpc; //Ö÷²Ëµ¥
+	newscript->pGossipHello = &GossipHello_npc_prof_vipnpc; //ä¸»èœå•
 	newscript->pGossipSelect = &GossipSelect_npc_prof_vipnpc;
 	newscript->RegisterSelf();
 	/*newscript = new Script;

@@ -21113,9 +21113,9 @@ bool Player::LevelUp(uint16 tlevel, uint32 costcoin) {
 //升级用户等级
 bool Player::LevelUp(uint16 tlevel) {
 	DEBUG_LOG("用户的等级是%d", GetUInt32Value(UNIT_FIELD_LEVEL));
-	if (tlevel > STRONG_MAX_LEVEL)                        // hardcoded maximum level
+	if (tlevel > DEFAULT_MAX_LEVEL)                        // hardcoded maximum level
 	{
-		tlevel = STRONG_MAX_LEVEL;
+		tlevel = DEFAULT_MAX_LEVEL;
 	}
 
 	GiveLevel(tlevel);

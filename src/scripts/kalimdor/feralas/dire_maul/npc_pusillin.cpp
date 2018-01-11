@@ -19,11 +19,11 @@ enum
 /*
 INSERT INTO nostalrius_string (entry, content_default)
 VALUES
-(50, "Si vous voulez la clé, il va falloir m'attraper !"),
-(51, "Poursuivez moi si vous l'osez, je m'enfuis sans hésiter !"),
-(52, "Pourquoi voudriez vous me faire souffrir ? Venez. L'amitié peut nous réunir !"),
-(53, "MEURS ? Vous faîtes pleurer Pusilin !"),
-(54, "Dites bonjour à mes petits amis !");
+(50, "Si vous voulez la cl? il va falloir m'attraper !"),
+(51, "Poursuivez moi si vous l'osez, je m'enfuis sans hé–Ÿiter !"),
+(52, "Pourquoi voudriez vous me faire souffrir ? Venez. L'amiti?peut nous ré–¡nir !"),
+(53, "MEURS ? Vous faé¡ƒes pleurer Pusilin !"),
+(54, "Dites bonjour ?mes petits amis !");
 */
 struct npc_pusillinAI : public ScriptedAI
 {
