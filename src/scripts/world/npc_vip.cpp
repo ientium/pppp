@@ -126,7 +126,7 @@ void SendChildMenu_INSTANTFLIGHT(Player* pPlayer, Creature* pCreature, uint32 ui
 	uint32 timetemp = pPlayer->getVipInfo(2) - time(NULL);   //获取瞬飞到期时间和当前时间的差值
 	switch (uiAction)
 	{
-		case 1:
+		case 2:
 			if (pPlayer->getVipInfo(2) > 0)
 			{
 				if (timetemp > 0) {
@@ -180,20 +180,7 @@ void SendChildMenu_INSTANTFLIGHT(Player* pPlayer, Creature* pCreature, uint32 ui
 bool GossipHello_npc_prof_vipnpc(Player* pPlayer, Creature* pCreature)
 {
 	SendChildMenu_Main(pPlayer, pCreature);
-	
-	/*pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INQUIRECOIN, GOSSIP_SENDER_INQUIRECOIN,1);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_INSTANTFLIGHT, GOSSIP_SENDER_INSTANTFLIGHT,2);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME,  GOSSIP_SENDER_CHANGENAME,3);
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGERACE, GOSSIP_SENDER_CHANGERACE,4);
-	if (pPlayer->getLevel() <= DEFAULT_MAX_LEVEL)
-	{
-		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_LEVELUP,GOSSIP_SENDER_LEVELUP,5);
-	}
-	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_VIP_TEXT_VENDOR, GOSSIP_ACTION_TRADE,6);
-	char sMessage[200];
-	sprintf(sMessage, "欢迎您， %s !", pPlayer->GetName());
-	pPlayer->SEND_GOSSIP_TEXT(sMessage);
-	pPlayer->SEND_GOSSIP_MENU(0x7FFFFFFF, pCreature->GetGUID()); //80001为VIP商人菜单*/
+
 	return true;
 
 }
