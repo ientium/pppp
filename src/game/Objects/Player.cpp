@@ -20997,6 +20997,9 @@ uint16 Player::setUpdateVIPFlyingTime(uint32 timetamp, uint32 coin)
 		return true;
 	}
 	uint16 t_Flag = costVipCoin(2, coin);
+
+	DEBUG_LOG("WORLD: ==================%d", timetamp);
+
 	if (t_Flag == 1) {
 		if (memberVInfo.activateTaxiTime > 0) {
 			memberVInfo.activateTaxiTime = memberVInfo.activateTaxiTime + timetamp;
@@ -21015,7 +21018,7 @@ uint16 Player::setUpdateVIPFlyingTime(uint32 timetamp, uint32 coin)
 //返回未转换的在线时间
 uint32 Player::getVipInfoTimeToCoin() {
 
-	if (getLevel() >= 60) {
+	if (getLevel() >= DEFAULT_MAX_LEVEL) {
 
 		return memberVInfo.totaltime;
 
@@ -21049,7 +21052,7 @@ uint16 Player::costVipCoin(uint16 uType, uint32 t_coin)
 
 		break;
 	case 1:                                // generalcoin
-		if (getLevel()<60) {
+		if (getLevel()<DEFAULT_MAX_LEVEL) {
 			return  5;
 		}
 		else if (memberVInfo.generalcoin < t_coin) {
@@ -21096,6 +21099,7 @@ uint16 Player::GetInfoLevel() {
 	return GetUInt32Value(UNIT_FIELD_LEVEL);
 }
 //升级用户等级
+
 bool Player::LevelUp(uint16 tlevel, uint32 costcoin) {
 	DEBUG_LOG("用户的等级是%d", GetUInt32Value(UNIT_FIELD_LEVEL));
 	int32 oldlevel = GetUInt32Value(UNIT_FIELD_LEVEL);
