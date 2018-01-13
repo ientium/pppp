@@ -140,10 +140,10 @@ void SendChildMenu_INSTANTFLIGHT(Player* pPlayer, Creature* pCreature, uint32 ui
 					char sMessage[100];
 
 					time_t currenttime = pPlayer->getVipInfo(2);
-					time(&currenttime);
+					
 					char tmp[64];
 					strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&currenttime));
-
+					DEBUG_LOG("WORLD: 设定VIP时长 111");
 					sprintf(sMessage, "尊敬的 %s,您的瞬飞到期时间为 %s", pPlayer->GetName(),tmp);
 					pPlayer->SEND_GOSSIP_TEXT(sMessage);
 				}
@@ -172,7 +172,6 @@ void SendChildMenu_INSTANTFLIGHT(Player* pPlayer, Creature* pCreature, uint32 ui
 				pPlayer->setUpdateVIPFlyingTime(C_FLYINGMONSECOND, C_FLYINGMON_COIN);
 				char sMessage[100];
 				time_t currenttime = pPlayer->getVipInfo(2);
-				time(&currenttime);
 				char tmp[64];
 
 				strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&currenttime));
@@ -213,7 +212,7 @@ void SendChildMenu_LEVELUP(Player* pPlayer, Creature* pCreature, uint32 uiAction
 		case GOSSIP_SENDER_LEVELUP_ONE:
 			
 			if (pPlayer->getVipInfo(-1) >= C_LEVELUP_COIN){
-				   char sMessage[100];
+				   //char sMessage[100];
 					pPlayer->LevelUp(1, C_LEVELUP_COIN);
 					//sprintf(sMessage, "等级提升为 %s级.", pPlayer->getLevel());
 					//pCreature->MonsterSay(sMessage, LANG_UNIVERSAL);
@@ -236,7 +235,7 @@ void SendChildMenu_LEVELUP(Player* pPlayer, Creature* pCreature, uint32 uiAction
 			if (pPlayer->getVipInfo(-1) >= C_LEVELUP_COIN) {
 				char sMessage[200];
 				pPlayer->LevelUp((DEFAULT_MAX_LEVEL- pPlayer->GetInfoLevel()),C_MAXLEVEL_COIN);
-				sprintf(sMessage, "等级提升为 %s级.", DEFAULT_MAX_LEVEL);
+				sprintf(sMessage, "等级提升为 %d级.", DEFAULT_MAX_LEVEL);
 				pCreature->MonsterSay(sMessage, LANG_UNIVERSAL);
 			}
 			if (pPlayer->GetInfoLevel() == DEFAULT_MAX_LEVEL)
@@ -254,10 +253,10 @@ void SendChildMenu_GOSSIP_SENDER_CHANGENAME(Player* pPlayer, Creature* pCreature
 	{
 		case 3:
 			char sMessage[100];
-			sprintf(sMessage, "尊敬的%s ,修改名字需要%d积分.", C_CHANGENAME_COIN);
+			sprintf(sMessage, "尊敬的%s ,修改名字需要%d积分.", pPlayer->GetName(), C_CHANGENAME_COIN);
 			pPlayer->SEND_GOSSIP_TEXT(sMessage);
 			if (pPlayer->getVipInfo(-1) >= C_CHANGENAME_COIN) {
-				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME_STRING, GOSSIP_SENDER_CHANGENAME, GOSSIP_SENDER_CHANGENAME_CHANGE, true, "请在输入框中填写新名字?", 0);
+				pPlayer->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_CHANGENAME_STRING, GOSSIP_SENDER_CHANGENAME, GOSSIP_SENDER_CHANGENAME_CHANGE, "请在输入框中填写新名字?", 0);
 			}
 			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VIP_TEXT_BACK, GOSSIP_SENDER_BACK, 2);
 	

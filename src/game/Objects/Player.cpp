@@ -14649,13 +14649,13 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder)
 
     // rest bonus can only be calculated after InitStatsForLevel()
     m_rest_bonus = fields[21].GetFloat();
-
+	//经验判定
     if (time_diff > 0)
     {
         //speed collect rest bonus in offline, in logout, far from tavern, city (section/in hour)
-        float bubble0 = 0.031f;
+        float bubble0 = 0.031f;                                          //野外休息经验倍率
         //speed collect rest bonus in offline, in logout, in tavern, city (section/in hour)
-        float bubble1 = 0.125f;
+        float bubble1 = 0.125f;                                                     //旅馆休息倍率
         float bubble = fields[23].GetUInt32() > 0
                        ? bubble1 * sWorld.getConfig(CONFIG_FLOAT_RATE_REST_OFFLINE_IN_TAVERN_OR_CITY)
                        : bubble0 * sWorld.getConfig(CONFIG_FLOAT_RATE_REST_OFFLINE_IN_WILDERNESS);

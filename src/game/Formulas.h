@@ -96,7 +96,7 @@ namespace MaNGOS
             const uint32 nBaseExp = 45;
             return (pl_level * 5 + nBaseExp) * BaseGainLevelFactor(pl_level, mob_level);
         }
-
+//战斗信息
         inline uint32 Gain(Player *pl, Unit *u)
         {
             // Some objects and totems are marked as pets, need some aditional checks
