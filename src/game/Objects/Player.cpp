@@ -14564,7 +14564,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder)
     time_t logoutTime = time_t(fields[22].GetUInt64());
 
     // since last logout (in seconds)
-    uint32 time_diff = uint32(now - logoutTime);
+    uint32 time_diff = uint32(now - logoutTime);   //上次到现在的离线时间
 
     // set value, including drunk invisibility detection
     // calculate sobering. after 15 minutes logged out, the player will be sober again
@@ -14652,15 +14652,15 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder)
 
     if (time_diff > 0)
     {
-        //speed collect rest bonus in offline, in logout, far from tavern, city (section/in hour)
+        //speed collect rest bonus in offline, in logout, far from tavern, city (section/in hour)  //不在旅店，城市的打怪倍率
         float bubble0 = 0.031f;
-        //speed collect rest bonus in offline, in logout, in tavern, city (section/in hour)
+        //speed collect rest bonus in offline, in logout, in tavern, city (section/in hour)       //在旅店，城市的打怪倍率
         float bubble1 = 0.125f;
         float bubble = fields[23].GetUInt32() > 0
                        ? bubble1 * sWorld.getConfig(CONFIG_FLOAT_RATE_REST_OFFLINE_IN_TAVERN_OR_CITY)
                        : bubble0 * sWorld.getConfig(CONFIG_FLOAT_RATE_REST_OFFLINE_IN_WILDERNESS);
 
-        SetRestBonus(GetRestBonus() + time_diff * ((float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) / 72000)*bubble);
+        SetRestBonus(GetRestBonus() + time_diff * ((float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) / 72000)*bubble);//设置新的倍率
     }
 
     // load skills after InitStatsForLevel because it triggering aura apply also
@@ -17069,7 +17069,8 @@ void Player::RemovePetitionsAndSigns(ObjectGuid guid)
     CharacterDatabase.CommitTransaction();
 }
 
-void Player::SetRestBonus(float rest_bonus_new)
+//设置经验倍率
+void Player::SetRestBonus(float rest_bonus_new)   //休息奖励
 {
     // Prevent resting on max level
     if (getLevel() >= sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL))
@@ -17078,7 +17079,7 @@ void Player::SetRestBonus(float rest_bonus_new)
     if (rest_bonus_new < 0)
         rest_bonus_new = 0;
 
-    float rest_bonus_max = (float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) * 1.5f / 2.0f;
+    float rest_bonus_max = (float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) * 1.5f / 2.0f;  //最大经验数，为下一级经验的3/4
 
     if (rest_bonus_new > rest_bonus_max)
         m_rest_bonus = rest_bonus_max;
