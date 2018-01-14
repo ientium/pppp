@@ -5972,7 +5972,9 @@ void SpellAuraHolder::AddAura(Aura *aura, SpellEffectIndex index)
 
 void SpellAuraHolder::RemoveAura(SpellEffectIndex index)
 {
-    m_auras[index] = nullptr;
+
+    
+	m_auras[index] = nullptr;
 }
 
 void SpellAuraHolder::ApplyAuraModifiers(bool apply, bool real)
@@ -6355,7 +6357,8 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
     {
         case SPELLFAMILY_SHAMAN:
         {
-            // Nostalrius : Pas de marche sur l'eau + loup fantome.
+            //萨满幽灵狼形态，如有水上行走，就移除
+			// Nostalrius : Pas de marche sur l'eau + loup fantome.
             if (apply && GetSpellProto()->Id == 2645)
                 if (Unit* pCaster = GetCaster())
                     if (Aura* aura = pCaster->GetAura(546, EFFECT_INDEX_0))

@@ -310,12 +310,26 @@ enum SelectFlags
 // Vendors
 struct VendorItem
 {
-    VendorItem(uint32 _item, uint32 _maxcount, uint32 _incrtime)
-        : item(_item), maxcount(_maxcount), incrtime(_incrtime) {}
+    //VendorItem(uint32 _item, uint32 _maxcount, uint32 _incrtime)
+    //    : item(_item), maxcount(_maxcount), incrtime(_incrtime) {}
 
+	VendorItem(uint32 _item, uint32 _maxcount, uint32 _incrtime, uint32 excost, uint16 itemtype, uint16 _itclass)
+		: item(_item), maxcount(_maxcount), incrtime(_incrtime), excost(excost), itemtype(itemtype), itclass(_itclass) {}
+	VendorItem(uint32 _item, uint32 _maxcount, uint32 _incrtime)
+		: item(_item), maxcount(_maxcount), incrtime(_incrtime), excost(0), itemtype(0), itclass(0) {}
+	//ientium@sina.com 小脏手 
+	//VIPInfo商店设置初始化
     uint32 item;
     uint32 maxcount;                                        // 0 for infinity item amount
     uint32 incrtime;                                        // time for restore items amount if maxcount != 0
+	
+															//VIPInfo商店设置
+	uint32 excost;                                            //额外花费的点数
+
+	uint16 itemtype;                                           //商店类型 0普通 1VIP 2公会
+	uint16 itclass;                                           //职业类别 ，0为不分职业
+
+
 };
 typedef std::vector<VendorItem*> VendorItemList;
 
@@ -334,6 +348,11 @@ struct VendorItemData
     {
         m_items.push_back(new VendorItem(item, maxcount, ptime));
     }
+	//VIPInfo商店设定
+	void AddItem(uint32 item, uint32 maxcount, uint32 ptime, uint32 excost, uint16 itemtype, uint16 _itclass)
+	{
+		m_items.push_back(new VendorItem(item, maxcount, ptime, excost, itemtype, _itclass));
+	}
     bool RemoveItem( uint32 item_id );
     VendorItem const* FindItem(uint32 item_id) const;
     size_t FindItemSlot(uint32 item_id) const;

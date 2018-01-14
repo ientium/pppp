@@ -1919,7 +1919,11 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void resetTransformScale();
         float getNativeScale() const;
         void setNativeScale(float scale);
-
+		//ientium@sina.com 小脏手 
+		//自定义Buff判断
+		void RemoveCustomSpellAuras(Aura* aur);
+		void AddCustomSpellAuras(Aura *Aur);
+		void UpdateCustomSpellAuras(Aura *Aur);
     protected:
         explicit Unit ();
 

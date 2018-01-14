@@ -284,6 +284,8 @@ struct DuelInfo
     bool finished;
 };
 
+
+
 struct Areas
 {
     uint32 areaID;
@@ -737,7 +739,7 @@ std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi);
 
 struct MemberVIPInfo
 {
-	MemberVIPInfo() : vipcoin(0), generalcoin(0), activateTaxiTime(0), totaltime(0), costvipcoin(0), costgeneralcoin(0), lastupdate(0) {}
+	MemberVIPInfo() : vipcoin(0), generalcoin(0), activateTaxiTime(0), totaltime(0), costvipcoin(0), costgeneralcoin(0), lastupdate(0), multiplyingexp(1){}
 	uint32 vipcoin;
 	uint32 generalcoin;
 	uint32 activateTaxiTime;
@@ -745,6 +747,7 @@ struct MemberVIPInfo
 	int32 costvipcoin;  //花费的vipcion
 	int32 costgeneralcoin; //花费的普通generalcoin
 	uint32 lastupdate;//最后查询时间
+	int32 multiplyingexp; //经验倍率
 };
 
 

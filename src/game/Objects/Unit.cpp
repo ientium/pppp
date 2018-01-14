@@ -4776,7 +4776,12 @@ void Unit::RemoveAura(Aura *Aur, AuraRemoveMode mode)
     // un-apply code expected that aura not find by diff searches
     // in another case it can be double removed for example, if target die/etc in un-apply process.
     Aur->GetHolder()->RemoveAura(Aur->GetEffIndex());
-
+	
+	//ientium@sina.com 小脏手 
+	//自定义Buff判断
+	if(Aur->GetEffIndex()>35000){
+			RemoveCustomSpellAuras(Aur);
+	}
     // some auras also need to apply modifier (on caster) on remove
     if (mode == AURA_REMOVE_BY_DELETE)
     {
@@ -10982,6 +10987,12 @@ SpellAuraHolder* Unit::AddAura(uint32 spellId, uint32 addAuraFlags, Unit* pCaste
             else if (addAuraFlags & ADD_AURA_NEGATIVE)
                 aur->SetPositive(true);
 
+			//ientium@sina.com 小脏手 ++++++++++++++++++++++++++++++++++++++
+			//自定义Buff判断
+			
+			AddCustomSpellAuras(aur);
+			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
             holder->AddAura(aur, SpellEffectIndex(i));
         }
     }
@@ -11710,3 +11721,43 @@ void Unit::InitPlayerDisplayIds()
     }
 
 }
+//ientium@sina.com 小脏手 
+//自定义Buff删除
+void Unit::RemoveCustomSpellAuras(Aura *Aur){
+	
+	if (Aur->GetId() > 35000) {
+		switch (Aur->GetId())
+		{
+		case 35004: //双倍经验卷轴
+			Unit* pCaster = Aur->GetTarget();
+			if (pCaster->IsPlayer() && pCaster->ToPlayer()){
+				pCaster->ToPlayer()->memberVInfo.multiplyingexp = 1;   //倍率恢复为1
+			}
+		
+			break;
+		
+		}
+	}
+}
+//自定义Buff添加
+void Unit::AddCustomSpellAuras(Aura *Aur) {
+	//Unit* pCaster = Aur->GetCaster();
+	DETAIL_LOG("PLAYER: AurID %u======================================>: %d", GetGUIDLow(), Aur->GetId());
+	if (Aur->GetId() > 35000) {
+		switch (Aur->GetId())
+		{
+		case 35004: //双倍经验卷轴
+			Unit* pCaster = Aur->GetCaster();      //卷轴目标
+
+			if (pCaster->IsPlayer() && pCaster->ToPlayer()) {
+				DETAIL_LOG("PLAYER: pCaster %u======================================>: %d", pCaster->ToPlayer()->GetGUIDLow(), Aur->GetId());
+				pCaster->ToPlayer()->memberVInfo.multiplyingexp = 2;   //倍率恢复为1
+			}
+
+			break;
+		
+		}
+	}
+}
+
+

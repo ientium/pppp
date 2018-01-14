@@ -493,6 +493,10 @@ class MANGOS_DLL_SPEC Aura
 
         bool IsLastAuraOnHolder();
         SpellModifier* GetSpellModifier() const { return m_spellmod; }
+		//ientium@sina.com 小脏手 
+		//自定义Buff判断
+
+
     protected:
         Aura(SpellEntry const* spellproto, SpellEffectIndex eff, int32 *currentBasePoints, SpellAuraHolder *holder, Unit *target, Unit *caster = NULL, Item* castItem = NULL);
 

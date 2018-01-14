@@ -19,6 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
 #include <unordered_map>
 
 #include "Player.h"
@@ -2700,6 +2701,13 @@ void Player::GiveXP(uint32 xp, Unit* victim)
     // XP resting bonus for kill
     uint32 rested_bonus_xp = victim ? GetXPRestBonus(xp) : 0;
 
+	//ientium@sina.com 小脏手 
+	//加入经验倍率计算
+	xp = xp * memberVInfo.multiplyingexp;
+	DETAIL_LOG("PLAYER: Player %u======================================>: %d", GetGUIDLow(), xp);
+	DETAIL_LOG("PLAYER: Player %u=====================================================>: %d", GetGUIDLow(), xp);
+
+	DETAIL_LOG("PLAYER: Player %u======================================>: %d", GetGUIDLow(), memberVInfo.multiplyingexp);
     SendLogXPGain(xp, victim, rested_bonus_xp);
 
     uint32 curXP = GetUInt32Value(PLAYER_XP);
@@ -17614,13 +17622,18 @@ bool Player::BuyItemFromVendor(ObjectGuid vendorGuid, uint32 item, uint8 count, 
 
     // reputation discount
     price = uint32(floor(price * GetReputationPriceDiscount(pCreature)));
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//ientium@sina.com  小脏手 
+	//如果不是VIP商店则判断金钱是否够用
+	if(crItem->itemtype!=1){
+		if (GetMoney() < price)
+		{
+			SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, pCreature, item, 0);
+			return false;
+		}
+	}
 
-    if (GetMoney() < price)
-    {
-        SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, pCreature, item, 0);
-        return false;
-    }
-
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     Item* pItem = NULL;
 
     if ((bag == NULL_BAG && slot == NULL_SLOT) || IsInventoryPos(bag, slot))
@@ -17632,8 +17645,30 @@ bool Player::BuyItemFromVendor(ObjectGuid vendorGuid, uint32 item, uint8 count, 
             SendEquipError(msg, NULL, NULL, item);
             return false;
         }
+		//ModifyMoney(-int32(price));
+		//ientium@sina.com  小脏手++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		//VIPInfo 商店判断
 
-        LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
+		switch (crItem->itemtype)
+		{
+		case 0:
+			LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
+			break;
+		case 1:
+			uint32 price = crItem->excost * count;
+			DEBUG_LOG("WORLD: BuyItemFromVendor - CostA %d.", crItem->excost* count);
+			if (getVipInfo(-1) < price)
+			{
+				SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, pCreature, item, 0);
+				return false;
+			}
+			costVipCoin(2, price);  //混合扣分
+			break;
+
+		}
+
+
+        //LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
 
         pItem = StoreNewItem(dest, item, true);
     }
@@ -17653,8 +17688,24 @@ bool Player::BuyItemFromVendor(ObjectGuid vendorGuid, uint32 item, uint8 count, 
             return false;
         }
 
-        LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
+        //LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
+		switch (crItem->itemtype)
+		{
+		case 0:
+			LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
+			break;
+		case 1:
+			uint32 price = crItem->excost * count;
+			DEBUG_LOG("WORLD: BuyItemFromVendor - CostA %d.", crItem->excost* count);
+			if (getVipInfo(-1) < price)
+			{
+				SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, pCreature, item, 0);
+				return false;
+			}
+			costVipCoin(2, price);  //混合扣分
+			break;
 
+		}
         pItem = EquipNewItem(dest, item, true);
 
         if (pItem)
@@ -21059,7 +21110,7 @@ uint16 Player::costVipCoin(uint16 uType, uint32 t_coin)
 			return  3;
 		}
 		else {
-			DEBUG_LOG("WORLD: 设定VIP时长 111");
+			
 			memberVInfo.generalcoin = memberVInfo.generalcoin - t_coin;
 			memberVInfo.costgeneralcoin = memberVInfo.costgeneralcoin + t_coin;
 			return  1;
@@ -21077,13 +21128,14 @@ uint16 Player::costVipCoin(uint16 uType, uint32 t_coin)
 				memberVInfo.costgeneralcoin = memberVInfo.costgeneralcoin + t_coin;
 			}
 			else {
-				memberVInfo.costvipcoin = t_coin - memberVInfo.generalcoin;
+				memberVInfo.costvipcoin = memberVInfo.costvipcoin+(t_coin - memberVInfo.generalcoin) ;
 				memberVInfo.vipcoin = memberVInfo.vipcoin - memberVInfo.costvipcoin;
-				memberVInfo.costgeneralcoin = memberVInfo.generalcoin;
+				memberVInfo.costgeneralcoin = memberVInfo.costgeneralcoin+memberVInfo.generalcoin;
 				memberVInfo.generalcoin = 0;
-
+				
 
 			}
+			DEBUG_LOG("用户的哈佛点数是%d，已升级", memberVInfo.costvipcoin);
 			return  1;
 		}
 		break;
@@ -21094,7 +21146,7 @@ uint16 Player::costVipCoin(uint16 uType, uint32 t_coin)
 }
 //获得用户等级
 uint16 Player::GetInfoLevel() {
-	DEBUG_LOG("用户的等级是%d", GetUInt32Value(UNIT_FIELD_LEVEL));
+	
 
 	return GetUInt32Value(UNIT_FIELD_LEVEL);
 }
@@ -21108,25 +21160,16 @@ bool Player::LevelUp(uint16 tlevel, uint32 costcoin) {
 	{
 		newlevel = DEFAULT_MAX_LEVEL;
 	}
-	costVipCoin(2, costcoin); //扣积分
-	GiveLevel(newlevel);
-	InitTalentForLevel();
-	SetUInt32Value(PLAYER_XP, 0);
-	return true;
-}
-//升级用户等级
-bool Player::LevelUp(uint16 tlevel) {
-	DEBUG_LOG("用户的等级是%d", GetUInt32Value(UNIT_FIELD_LEVEL));
-	if (tlevel > DEFAULT_MAX_LEVEL)                        // hardcoded maximum level
-	{
-		tlevel = DEFAULT_MAX_LEVEL;
+	uint16 t_Flag = costVipCoin(2, costcoin);
+	if (t_Flag == 1) { //扣积分
+		DEBUG_LOG("用户的新等级是%d，已升级", newlevel);
+		GiveLevel(newlevel);
+		
+		SetUInt32Value(PLAYER_XP, 0);
 	}
-
-	GiveLevel(tlevel);
-	InitTalentForLevel();
-	SetUInt32Value(PLAYER_XP, 0);
 	return true;
 }
+
 //查询更新表信息
 bool Player::UpdateVIPInfo() {
 	QueryResult* result = CharacterDatabase.PQuery("SELECT vipcoin,generalcoin FROM character_vip WHERE guid='%u'", GetGUIDLow());

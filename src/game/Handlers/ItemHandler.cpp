@@ -811,14 +811,20 @@ void WorldSession::SendListInventory(ObjectGuid vendorguid)
 
                 // reputation discount
                 uint32 price = uint32(floor(pProto->BuyPrice * discountMod));
-
-                data << uint32(count);
-                data << uint32(crItem->item);
-                data << uint32(pProto->DisplayInfoID);
-                data << uint32(crItem->maxcount <= 0 ? 0xFFFFFFFF : pCreature->GetVendorItemCurrentCount(crItem));
-                data << uint32(price);
-                data << uint32(pProto->MaxDurability);
-                data << uint32(pProto->BuyCount);
+				
+				//ientium@sina.com 小脏手
+				//VIPInfo商店判断。判断所属类别
+				if (crItem->itclass == 0 || (_player->getClass() == crItem->itclass))
+				{
+					data << uint32(count);
+					data << uint32(crItem->item);
+					data << uint32(pProto->DisplayInfoID);
+					data << uint32(crItem->maxcount <= 0 ? 0xFFFFFFFF : pCreature->GetVendorItemCurrentCount(crItem));
+					data << uint32(price);
+					data << uint32(pProto->MaxDurability);
+					data << uint32(pProto->BuyCount);
+				}
+                
             }
         }
     }
