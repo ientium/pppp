@@ -4082,7 +4082,7 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
 	//添加自定义技能效果
 	//DEBUG_LOG("PLAYER: %u ===================================>: %u", holder->GetId(), holder->GetCasterGuid());
 	AddCustomSpellAuras(holder);
-    DEBUG_LOG("Holder of spell11 %u now is in use", holder->GetId());
+    DEBUG_LOG("Holder of spell %u now is in use", holder->GetId());
 
     // if aura deleted before boosts apply ignore
     // this can be possible it it removed indirectly by triggered spell effect at ApplyModifier
@@ -11730,15 +11730,22 @@ void Unit::InitPlayerDisplayIds()
 void Unit::AddCustomSpellAuras(SpellAuraHolder *holder) {
 	//Unit* pCaster = Aur->GetCaster();
 	//DEBUG_LOG("Holder of spell %u now is in use", holder->GetId());
-	
+	Player* pCaster = (holder->GetCaster())->ToPlayer();      //卷轴目标
 
 		switch (holder->GetId())
 		{
 		case 35004: //双倍经验卷轴
-			Unit* pCaster = holder->GetCaster();      //卷轴目标
-			DEBUG_LOG("PLAYER Add: === %u===================memberVInfo.multiplyingexp===================>: %d", pCaster->ToPlayer()->GetGUIDLow(), pCaster->ToPlayer()->memberVInfo.multiplyingexp);
 			
-			(pCaster->ToPlayer())->memberVInfo.multiplyingexp = 2;   //倍率恢复为2
+			DEBUG_LOG("PLAYER Add: === %u===================memberVInfo.multiplyingexp===================>: %d", pCaster->GetGUIDLow(), pCaster->memberVInfo.multiplyingexp);
+			
+			pCaster->memberVInfo.multiplyingexp = 2;   //倍率恢复为2
+
+			break;
+		case 35005: //双倍经验卷轴
+			
+			DEBUG_LOG("PLAYER Add: === %u===================memberVInfo.multiplyingexp===================>: %d", pCaster->GetGUIDLow(), pCaster->memberVInfo.multiplyingexp);
+
+			pCaster->memberVInfo.multiplyingexp = 2;   //倍率恢复为2
 
 			break;
 
@@ -11749,15 +11756,22 @@ void Unit::AddCustomSpellAuras(SpellAuraHolder *holder) {
 void Unit::RemoveCustomSpellAuras(SpellAuraHolder *holder) {
 	//Unit* pCaster = Aur->GetCaster();
 	//DEBUG_LOG("Holder of spell %u now is in use", holder->GetId());
-
+	Player* pCaster = (holder->GetCaster())->ToPlayer();      //卷轴目标
 
 	switch (holder->GetId())
 	{
 	case 35004: //双倍经验卷轴
-		Unit* pCaster = holder->GetCaster();      //卷轴目标
-		DEBUG_LOG("PLAYER Remove: === %u===================memberVInfo.multiplyingexp===================>: %d", pCaster->ToPlayer()->GetGUIDLow(), pCaster->ToPlayer()->memberVInfo.multiplyingexp);
 
-		(pCaster->ToPlayer())->memberVInfo.multiplyingexp = 1;   //倍率恢复为2
+		DEBUG_LOG("PLAYER Remove: === %u===================memberVInfo.multiplyingexp===================>: %d", pCaster->GetGUIDLow(), pCaster->memberVInfo.multiplyingexp);
+
+		pCaster->memberVInfo.multiplyingexp = 1;   //倍率恢复为2
+
+		break;
+	case 35005: //双倍经验卷轴
+		
+		DEBUG_LOG("PLAYER Remove: === %u===================memberVInfo.multiplyingexp===================>: %d", pCaster->GetGUIDLow(), pCaster->memberVInfo.multiplyingexp);
+
+		pCaster->memberVInfo.multiplyingexp = 1;   //倍率恢复为2
 
 		break;
 

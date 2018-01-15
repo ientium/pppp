@@ -183,7 +183,9 @@ pEffect SpellEffects[TOTAL_SPELL_EFFECTS] =
     &Spell::EffectApplyAreaAura,                            //119 SPELL_EFFECT_APPLY_AREA_AURA_PET
     &Spell::EffectUnused,                                   //120 SPELL_EFFECT_TELEPORT_GRAVEYARD       one spell: Graveyard Teleport Test
     &Spell::EffectWeaponDmg,                                //121 SPELL_EFFECT_NORMALIZED_WEAPON_DMG
-    &Spell::EffectUnused,                                   //122 SPELL_EFFECT_122                      unused
+	//ientium@sina.com 小脏手
+	&Spell::EffectMultiplyinExp,                            //122 增加经验倍率
+	//&Spell::EffectUnused,                                  //122 SPELL_EFFECT_122                      unused
     &Spell::EffectSendTaxi,                                 //123 SPELL_EFFECT_SEND_TAXI                taxi/flight related (misc value is taxi path id)
     &Spell::EffectPlayerPull,                               //124 SPELL_EFFECT_PLAYER_PULL              opposite of knockback effect (pulls player twoard caster)
     &Spell::EffectModifyThreatPercent,                      //125 SPELL_EFFECT_MODIFY_THREAT_PERCENT
@@ -193,8 +195,7 @@ pEffect SpellEffects[TOTAL_SPELL_EFFECTS] =
     &Spell::EffectApplyAreaAura,                            //129 SPELL_EFFECT_APPLY_AREA_AURA_ENEMY
     &Spell::EffectDespawnObject,                            //130 SPELL_EFFECT_DESPAWN_OBJECT
     &Spell::EffectNostalrius,                               //131 SPELL_EFFECT_NOSTALRIUS
-	//ientium@sina.com 小脏手
-	&Spell::EffectMultiplyinExp,                               //132 增加经验倍率
+	
 };
 
 void Spell::EffectEmpty(SpellEffectIndex /*eff_idx*/)
@@ -6274,5 +6275,34 @@ void Spell::EffectNostalrius(SpellEffectIndex eff_idx)
 //增加经验倍率
 void Spell::EffectMultiplyinExp(SpellEffectIndex eff_idx)
 {
-	DEBUG_LOG("SPELL_EFFECT_NOSTALRIUS");
+	if (!unitTarget || !m_spellAuraHolder)
+		return;
+
+	if (!m_spellInfo->EffectApplyAuraName[eff_idx])
+		return;
+
+	// ghost spell check, allow apply any auras at player loading in ghost mode (will be cleanup after load)
+	if ((!unitTarget->isAlive() && !(IsDeathOnlySpell(m_spellInfo) || IsDeathPersistentSpell(m_spellInfo))) &&
+		(unitTarget->GetTypeId() != TYPEID_PLAYER || !((Player*)unitTarget)->GetSession()->PlayerLoading()))
+		return;
+
+	//if (unitTarget->HasMorePowerfullSpellActive(m_spellInfo))
+	//	return;
+
+	Unit* caster = GetAffectiveCaster();
+	if (!caster)
+	{
+		// FIXME: currently we can't have auras applied explicitly by gameobjects
+		// so for auras from wild gameobjects (no owner) target used
+		if (m_originalCasterGUID.IsGameObject())
+			caster = unitTarget;
+		else
+			return;
+	}
+
+	DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Spell: Aura is: %u [Spell%u:DiminishingGroup%u]", m_spellInfo->EffectApplyAuraName[eff_idx], m_spellInfo->Id, m_diminishGroup);
+
+	Aura* aur = CreateAura(m_spellInfo, eff_idx, &m_currentBasePoints[eff_idx], m_spellAuraHolder, unitTarget, caster, m_CastItem);
+	m_spellAuraHolder->AddAura(aur, eff_idx);
+	DEBUG_LOG("SPELL_EFFECT_MYSPELL");
 }
