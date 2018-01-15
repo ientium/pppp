@@ -193,6 +193,8 @@ pEffect SpellEffects[TOTAL_SPELL_EFFECTS] =
     &Spell::EffectApplyAreaAura,                            //129 SPELL_EFFECT_APPLY_AREA_AURA_ENEMY
     &Spell::EffectDespawnObject,                            //130 SPELL_EFFECT_DESPAWN_OBJECT
     &Spell::EffectNostalrius,                               //131 SPELL_EFFECT_NOSTALRIUS
+	//ientium@sina.com 小脏手
+	&Spell::EffectMultiplyinExp,                               //132 增加经验倍率
 };
 
 void Spell::EffectEmpty(SpellEffectIndex /*eff_idx*/)
@@ -6268,4 +6270,9 @@ void Spell::EffectDespawnObject(SpellEffectIndex eff_idx)
 void Spell::EffectNostalrius(SpellEffectIndex eff_idx)
 {
     DEBUG_LOG("SPELL_EFFECT_NOSTALRIUS");
+}
+//增加经验倍率
+void Spell::EffectMultiplyinExp(SpellEffectIndex eff_idx)
+{
+	DEBUG_LOG("SPELL_EFFECT_NOSTALRIUS");
 }

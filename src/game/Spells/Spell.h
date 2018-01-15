@@ -321,6 +321,8 @@ class Spell
         // Nostalrius
         void EffectDespawnObject(SpellEffectIndex eff_idx);
         void EffectNostalrius(SpellEffectIndex eff_idx);
+		//ientium@sina.com 小脏手
+		void EffectMultiplyinExp(SpellEffectIndex eff_idx);
         void HandleAddTargetTriggerAuras();
 
         Spell(Unit* caster, SpellEntry const *info, bool triggered, ObjectGuid originalCasterGUID = ObjectGuid(), SpellEntry const* triggeredBy = NULL, Unit* victim = NULL, SpellEntry const* triggeredByParent = NULL);
