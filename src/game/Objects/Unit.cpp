@@ -4068,6 +4068,7 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
     {
         sLog.outInfo("[Crash/Auras] Adding aura %u on player %s, but aura marked as deleted !", holder->GetId(), GetName());
         return false;
+		
     }
     // add aura, register in lists and arrays
     m_spellAuraHolders.insert(SpellAuraHolderMap::value_type(holder->GetId(), holder));
@@ -4077,6 +4078,10 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
             AddAuraToModList(aur);
 
     holder->ApplyAuraModifiers(true, true);
+	//ientium@sina.com 小脏手
+	//添加自定义技能效果
+	DETAIL_LOG("PLAYER: %u =============添加自定义==================>: %u", holder->GetId(), holder->GetCasterGuid());
+	AddCustomSpellAuras(holder->GetId(),holder);
     DEBUG_LOG("Holder of spell %u now is in use", holder->GetId());
 
     // if aura deleted before boosts apply ignore
@@ -10958,8 +10963,9 @@ SpellAuraHolder* Unit::AddAura(uint32 spellId, uint32 addAuraFlags, Unit* pCaste
 
     if (!pCaster)
         pCaster = this;
-
+	DETAIL_LOG("显示技能ID是多少 %u : ============================================= !", spellInfo->Id);
     SpellAuraHolder *holder = CreateSpellAuraHolder(spellInfo, this, pCaster);
+
     if (!holder)
         return nullptr;
 
@@ -10973,6 +10979,7 @@ SpellAuraHolder* Unit::AddAura(uint32 spellId, uint32 addAuraFlags, Unit* pCaste
         uint8 eff = spellInfo->Effect[i];
         if (eff >= TOTAL_SPELL_EFFECTS)
             continue;
+		//如果是区域法术，再处理
 
         if (IsAreaAuraEffect(eff)           ||
                 eff == SPELL_EFFECT_APPLY_AURA  ||
@@ -11718,18 +11725,19 @@ void Unit::InitPlayerDisplayIds()
 
 }
 //自定义Buff添加
-void Unit::AddCustomSpellAuras(Aura *Aur) {
+void Unit::AddCustomSpellAuras(uint32 spellId, SpellAuraHolder *holder) {
 	//Unit* pCaster = Aur->GetCaster();
-	DETAIL_LOG("PLAYER: AurID =============添加自定义==================>: %d", GetGUIDLow());
+	//DEBUG_LOG("Holder of spell %u now is in use", holder->GetId());
+	
 
-		switch (Aur->GetId())
+		switch (spellId)
 		{
 		case 35004: //双倍经验卷轴
-			Unit* pCaster = Aur->GetCaster();      //卷轴目标
+			Unit* pCaster = holder->GetCaster();      //卷轴目标
 
 			if (pCaster->IsPlayer() && pCaster->ToPlayer()) {
 				DETAIL_LOG("PLAYER: pCaster》》》》》 %u======================================>: %d", pCaster->ToPlayer()->GetGUIDLow(), spellId);
-				pCaster->ToPlayer()->memberVInfo.multiplyingexp = 2;   //倍率恢复为1
+				pCaster->ToPlayer()->memberVInfo.multiplyingexp = 2;   //倍率恢复为2
 			}
 
 			break;

@@ -1980,7 +1980,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool m_isCreatureLinkingTrigger;
         bool m_isSpawningLinked;
 
-		void AddCustomSpellAuras(Aura *Aur);
+		void AddCustomSpellAuras(uint32 spellId, SpellAuraHolder *holder);
 
     public:
         void DisableSpline();
