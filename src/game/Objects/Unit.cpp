@@ -4080,9 +4080,9 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
     holder->ApplyAuraModifiers(true, true);
 	//ientium@sina.com 小脏手
 	//添加自定义技能效果
-	DETAIL_LOG("PLAYER: %u =============添加自定义==================>: %u", holder->GetId(), holder->GetCasterGuid());
-	AddCustomSpellAuras(holder->GetId(),holder);
-    DEBUG_LOG("Holder of spell %u now is in use", holder->GetId());
+	//DEBUG_LOG("PLAYER: %u ===================================>: %u", holder->GetId(), holder->GetCasterGuid());
+	AddCustomSpellAuras(holder);
+    DEBUG_LOG("Holder of spell11 %u now is in use", holder->GetId());
 
     // if aura deleted before boosts apply ignore
     // this can be possible it it removed indirectly by triggered spell effect at ApplyModifier
@@ -4716,7 +4716,9 @@ void Unit::RemoveSpellAuraHolder(SpellAuraHolder *holder, AuraRemoveMode mode)
     }
 
     holder->_RemoveSpellAuraHolder();
-
+	//ientium@sina.com 小脏手
+	//删除自定义光环效果
+	RemoveCustomSpellAuras(holder);
     if (mode != AURA_REMOVE_BY_DELETE)
         holder->HandleSpellSpecificBoosts(false);
 
@@ -11725,25 +11727,42 @@ void Unit::InitPlayerDisplayIds()
 
 }
 //自定义Buff添加
-void Unit::AddCustomSpellAuras(uint32 spellId, SpellAuraHolder *holder) {
+void Unit::AddCustomSpellAuras(SpellAuraHolder *holder) {
 	//Unit* pCaster = Aur->GetCaster();
 	//DEBUG_LOG("Holder of spell %u now is in use", holder->GetId());
 	
 
-		switch (spellId)
+		switch (holder->GetId())
 		{
 		case 35004: //双倍经验卷轴
 			Unit* pCaster = holder->GetCaster();      //卷轴目标
-
-			if (pCaster->IsPlayer() && pCaster->ToPlayer()) {
-				DETAIL_LOG("PLAYER: pCaster》》》》》 %u======================================>: %d", pCaster->ToPlayer()->GetGUIDLow(), spellId);
-				pCaster->ToPlayer()->memberVInfo.multiplyingexp = 2;   //倍率恢复为2
-			}
+			DEBUG_LOG("PLAYER Add: === %u===================memberVInfo.multiplyingexp===================>: %d", pCaster->ToPlayer()->GetGUIDLow(), pCaster->ToPlayer()->memberVInfo.multiplyingexp);
+			
+			(pCaster->ToPlayer())->memberVInfo.multiplyingexp = 2;   //倍率恢复为2
 
 			break;
 
 		}
 	
+}
+//自定义Buff添加
+void Unit::RemoveCustomSpellAuras(SpellAuraHolder *holder) {
+	//Unit* pCaster = Aur->GetCaster();
+	//DEBUG_LOG("Holder of spell %u now is in use", holder->GetId());
+
+
+	switch (holder->GetId())
+	{
+	case 35004: //双倍经验卷轴
+		Unit* pCaster = holder->GetCaster();      //卷轴目标
+		DEBUG_LOG("PLAYER Remove: === %u===================memberVInfo.multiplyingexp===================>: %d", pCaster->ToPlayer()->GetGUIDLow(), pCaster->ToPlayer()->memberVInfo.multiplyingexp);
+
+		(pCaster->ToPlayer())->memberVInfo.multiplyingexp = 1;   //倍率恢复为2
+
+		break;
+
+	}
+
 }
 
 

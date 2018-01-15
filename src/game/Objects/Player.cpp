@@ -2704,10 +2704,10 @@ void Player::GiveXP(uint32 xp, Unit* victim)
 	//ientium@sina.com 小脏手 
 	//加入经验倍率计算
 	xp = xp * memberVInfo.multiplyingexp;
-	DETAIL_LOG("PLAYER: Player %u======================================>: %d", GetGUIDLow(), xp);
-	DETAIL_LOG("PLAYER: Player %u=====================================================>: %d", GetGUIDLow(), xp);
 
-	DETAIL_LOG("PLAYER: Player %u======================================>: %d", GetGUIDLow(), memberVInfo.multiplyingexp);
+	DETAIL_LOG("PLAYER: Player %u =====================================================>: %d", GetGUIDLow(), xp);
+
+	DETAIL_LOG("PLAYER: Player %u =====================================================>: %d", GetGUIDLow(), memberVInfo.multiplyingexp);
     SendLogXPGain(xp, victim, rested_bonus_xp);
 
     uint32 curXP = GetUInt32Value(PLAYER_XP);
