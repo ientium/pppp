@@ -14469,6 +14469,9 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder)
     _LoadBGData(holder->GetResult(PLAYER_LOGIN_QUERY_LOADBGDATA));
 
 
+    _LoadGuild(holder->GetResult(PLAYER_LOGIN_QUERY_LOADGUILD));
+
+
     MapEntry const* mapEntry = sMapStorage.LookupEntry<MapEntry>(GetMapId());
 
     // Check for valid map
@@ -15764,6 +15767,35 @@ bool Player::_LoadHomeBind(QueryResult *result)
     return true;
 }
 
+void Player::_LoadGuild(QueryResult* result)
+{
+    //"SELECT guildid,rank FROM guild_member WHERE guid = '%u'",pCurrChar->GetGUIDLow());
+
+    if (result)
+    {
+        Field *fields = result->Fetch();
+        SetInGuild(fields[0].GetUInt32());
+        SetRank(fields[1].GetUInt32());
+    }
+    else                       // clear guild related fields in case wrong data about nonexistent membership
+    {
+        SetInGuild(0);
+        SetRank(0);
+    }
+
+    if (GetGuildId() != 0)
+    {
+        Guild* guild = sGuildMgr.GetGuildById(GetGuildId());
+        if (!guild)
+        {
+            // remove wrong guild data
+            sLog.outError("%s marked as member of nonexistent guild (id: %u), removing guild membership for player.", GetGuidStr().c_str(), GetGuildId());
+            SetInGuild(0);
+            SetRank(0);
+        }
+    }
+}
+
 /*********************************************************/
 /***                   SAVE SYSTEM                     ***/
 /*********************************************************/
@@ -16901,12 +16933,12 @@ void Player::SendSpellMod(SpellModifier const* mod)
     for (int eff = 0; eff < 64; ++eff)
     {
         uint64 _mask = uint64(1) << eff;
-        if (mod->mask.IsFitToFamilyMask(_mask))
+        if (!!(mod->mask & _mask))
         {
             int32 val = 0;
             for (SpellModList::const_iterator itr = m_spellMods[mod->op].begin(); itr != m_spellMods[mod->op].end(); ++itr)
             {
-                if ((*itr)->type == mod->type && ((*itr)->mask.IsFitToFamilyMask(_mask)))
+                if ((*itr)->type == mod->type && !!((*itr)->mask & _mask))
                     val += (*itr)->value;
             }
             WorldPacket data(Opcode, (1 + 1 + 4));
