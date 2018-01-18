@@ -900,11 +900,9 @@ DROP TABLE IF EXISTS `petition`;
 CREATE TABLE IF NOT EXISTS `petition` (
   `ownerguid` int(10) unsigned NOT NULL,
   `petitionguid` int(10) unsigned DEFAULT '0',
-  `charterguid` int(10) unsigned DEFAULT NULL COMMENT 'Charter item GUID',
   `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`ownerguid`),
-  UNIQUE KEY `key_ownerguid_petitionguid` (`ownerguid`,`petitionguid`),
-  UNIQUE KEY `charterguid` (`charterguid`)
+  UNIQUE KEY `key_ownerguid_petitionguid` (`ownerguid`,`petitionguid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Guild System';
 
 -- Data exporting was unselected.

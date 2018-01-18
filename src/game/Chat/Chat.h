@@ -174,6 +174,8 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleViewLogCommand(char* );
         //Custom
         bool HandleListAddonsCommand(char *);
+        bool HandleDbcExportSpellCommand(char *);
+        bool HandleDbcExportSpellEffectsCommand(char *);
         bool HandleUpdateWorldStateCommand(char *);
         bool HandleSendSpellVisualCommand(char *);
         bool HandleSendSpellImpactCommand(char *);

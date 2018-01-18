@@ -89,7 +89,7 @@ bool ChatHandler::HandleDebugSendNextChannelSpellVisualCommand(char *args)
     }
     uint32 id = 0;
     SpellEntry const *spellInfo = NULL;
-    for (id = uiPlayId + 1; id <= sSpellMgr.GetMaxSpellId(); id++)
+    for (id = uiPlayId + 1; id <= sSpellStore.GetNumRows(); id++)
     {
         spellInfo = sSpellMgr.GetSpellEntry(id);
         if (!spellInfo || uiPlayId >= spellInfo->Id || !spellInfo->SpellVisual || !IsChanneledSpell(spellInfo))
@@ -97,7 +97,7 @@ bool ChatHandler::HandleDebugSendNextChannelSpellVisualCommand(char *args)
         else
             break;
     }
-    if (id && id <= sSpellMgr.GetMaxSpellId())
+    if (id && id <= sSpellStore.GetNumRows())
     {
         WorldPacket data(MSG_CHANNEL_START, (4 + 4));
         data << uint32(id);
@@ -107,7 +107,7 @@ bool ChatHandler::HandleDebugSendNextChannelSpellVisualCommand(char *args)
         PSendSysMessage("Playing channel visual of spell %u %s %s", id, spellInfo->SpellName[0], spellInfo->Rank[0]);
         return true;
     }
-    PSendSysMessage("Spell Id range 0 to %u, -1 to stop animation", sSpellMgr.GetMaxSpellId());
+    PSendSysMessage("Spell Id range 0 to %u, -1 to stop animation", sSpellStore.GetNumRows());
     return true;
 }
 
@@ -118,7 +118,7 @@ bool ChatHandler::HandleSendSpellChannelVisualCommand(char *args)
     if (playIdStr)
         uiPlayId = int32(atoi(playIdStr));
 
-    if (uiPlayId && uiPlayId <= sSpellMgr.GetMaxSpellId())
+    if (uiPlayId && uiPlayId <= sSpellStore.GetNumRows())
     {
         WorldPacket data(MSG_CHANNEL_START, (4 + 4));
         data << uint32(uiPlayId);
@@ -138,7 +138,7 @@ bool ChatHandler::HandleSendSpellChannelVisualCommand(char *args)
         PSendSysMessage("Sending channel stop");
         return true;
     }
-    PSendSysMessage("Spell Id range 1 to %u, 0 to stop animation", sSpellMgr.GetMaxSpellId());
+    PSendSysMessage("Spell Id range 1 to %u, 0 to stop animation", sSpellStore.GetNumRows());
     return true;
 }
 
