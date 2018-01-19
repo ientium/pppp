@@ -315,7 +315,7 @@ void AddScripts()
     AddSC_guards();
     AddSC_npc_professions();
     AddSC_npcs_special();
-	AddSC_npc_vip();
+	//
     AddSC_Totems();
     AddSC_world_event_naxxramas();
     AddSC_event_scourge_invasion();
@@ -549,4 +549,5 @@ void AddScripts()
     AddSC_winterspring();
 
     AddSC_npc_j_eevee();
+	AddSC_npc_vip();
 }

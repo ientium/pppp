@@ -4719,6 +4719,7 @@ void Unit::RemoveSpellAuraHolder(SpellAuraHolder *holder, AuraRemoveMode mode)
 	//ientium@sina.com 小脏手
 	//删除自定义光环效果
 	RemoveCustomSpellAuras(holder);
+
     if (mode != AURA_REMOVE_BY_DELETE)
         holder->HandleSpellSpecificBoosts(false);
 
