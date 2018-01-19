@@ -814,16 +814,50 @@ void WorldSession::SendListInventory(ObjectGuid vendorguid)
 				
 				//ientium@sina.com 小脏手
 				//VIPInfo商店判断。判断所属类别
-				if (crItem->itclass == 0 || (_player->getClass() == crItem->itclass))
+				
+				switch (crItem->itemtype)
 				{
-					data << uint32(count);
-					data << uint32(crItem->item);
-					data << uint32(pProto->DisplayInfoID);
-					data << uint32(crItem->maxcount <= 0 ? 0xFFFFFFFF : pCreature->GetVendorItemCurrentCount(crItem));
-					data << uint32(price);
-					data << uint32(pProto->MaxDurability);
-					data << uint32(pProto->BuyCount);
+					case 0:
+						data << uint32(count);
+						data << uint32(crItem->item);
+						data << uint32(pProto->DisplayInfoID);
+						data << uint32(crItem->maxcount <= 0 ? 0xFFFFFFFF : pCreature->GetVendorItemCurrentCount(crItem));
+						data << uint32(price);
+						data << uint32(pProto->MaxDurability);
+						data << uint32(pProto->BuyCount);
+					
+					break;
+					//VIP商店
+					case 1:
+						if (crItem->itclass == 0 || (_player->getClass() == crItem->itclass))
+						{
+							data << uint32(count);
+							data << uint32(crItem->item);
+							data << uint32(pProto->DisplayInfoID);
+							data << uint32(crItem->maxcount <= 0 ? 0xFFFFFFFF : pCreature->GetVendorItemCurrentCount(crItem));
+							data << uint32(price);
+							data << uint32(pProto->MaxDurability);
+							data << uint32(pProto->BuyCount);
+						}
+					break;
+					//公会商店
+					case 2:
+						
+						//物品全部类别和本职业类别并且用户公会声望值大于要求声望值
+						if ((crItem->itclass == 0 || _player->getClass() == crItem->itclass) &&(_player->memberVInfo.guild_reputation >= crItem->excost))
+						{
+							data << uint32(count);
+							data << uint32(crItem->item);
+							data << uint32(pProto->DisplayInfoID);
+							data << uint32(crItem->maxcount <= 0 ? 0xFFFFFFFF : pCreature->GetVendorItemCurrentCount(crItem));
+							data << uint32(price);
+							data << uint32(pProto->MaxDurability);
+							data << uint32(pProto->BuyCount);
+						}
+						break;
+
 				}
+				
                 
             }
         }

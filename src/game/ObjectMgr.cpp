@@ -8062,12 +8062,13 @@ void ObjectMgr::LoadVendors(char const* tableName, bool isTemplates)
     std::set<uint32> skip_vendors;
 
     //QueryResult *result = WorldDatabase.PQuery("SELECT entry, item, maxcount, incrtime FROM %s WHERE (item NOT IN (SELECT entry FROM forbidden_items WHERE (AfterOrBefore = 0 && patch <= %u) || (AfterOrBefore = 1 && patch >= %u)))", tableName, sWorld.GetWowPatch(), sWorld.GetWowPatch());
+	
 	//ientium@sina.com 小脏手
 	//VIPInfo商店修改
 	QueryResult* result;
 	if (isTemplates) {
 
-		result = WorldDatabase.PQuery("SELECT entry,item, maxcount,incrtime,excost,itemtype,class FROM %s", tableName);
+		result = WorldDatabase.PQuery("SELECT entry,item, maxcount,incrtime,excost,itemtype,class,level FROM %s", tableName);
 
 	}
 	else {
@@ -8101,10 +8102,12 @@ void ObjectMgr::LoadVendors(char const* tableName, bool isTemplates)
 		uint32 excost = 0;                                            //额外花费的点数
 		uint16 itemtype = 0;                                           //商店类型
 		uint16 itclass = 0;
+		uint16 ilevel = 1;                                             //商店等级
 		if (isTemplates) {
 			excost = fields[4].GetUInt32();                                          //额外花费的点数
 			itemtype = fields[5].GetUInt16();                                           //商店类型
-			itclass = fields[6].GetUInt16();                                           //商店类型
+			itclass = fields[6].GetUInt16();                                         // 商店销售物品类型
+			ilevel = fields[7].GetUInt16();                                          // 公会等级
 		}
 
         if (!IsVendorItemValid(isTemplates, tableName, entry, item_id, maxcount, incrtime, NULL, &skip_vendors))
@@ -8112,7 +8115,7 @@ void ObjectMgr::LoadVendors(char const* tableName, bool isTemplates)
 		
         VendorItemData& vList = vendorList[entry];
 		if (isTemplates) {
-			vList.AddItem(item_id, maxcount, incrtime, excost, itemtype, itclass);
+			vList.AddItem(item_id, maxcount, incrtime, excost, itemtype, itclass, ilevel);
 		}
 		else {
 			vList.AddItem(item_id, maxcount, incrtime);
@@ -8175,6 +8178,54 @@ void ObjectMgr::LoadVendorTemplates()
         sLog.outErrorDb("Table `npc_vendor_template` has vendor template %u not used by any vendors ", *vItr);
 }
 
+
+//ientium@sina.com 小脏手修改
+//公会专用商店
+void ObjectMgr::LoadVendorGuildTemplates()
+{
+	LoadVendors("npc_vendor_guild_template", true);
+
+	// post loading check
+	std::set<uint32> vendor_ids;
+
+	for (CacheVendorItemMap::const_iterator vItr = m_mCacheVendorTemplateItemMap.begin(); vItr != m_mCacheVendorTemplateItemMap.end(); ++vItr)
+		vendor_ids.insert(vItr->first);
+
+	for (uint32 i = 1; i < sCreatureStorage.GetMaxEntry(); ++i)
+	{
+		if (CreatureInfo const* cInfo = sCreatureStorage.LookupEntry<CreatureInfo>(i))
+		{
+			if (cInfo->vendorId)
+			{
+				if (m_mCacheVendorTemplateItemMap.find(cInfo->vendorId) != m_mCacheVendorTemplateItemMap.end())
+					vendor_ids.erase(cInfo->vendorId);
+				else
+					sLog.outErrorDb("Creature (Entry: %u) has vendor_id = %u for nonexistent vendor guild template", cInfo->Entry, cInfo->vendorId);
+			}
+		}
+	}
+
+	// We need to use a query to get all used vendor ids because of progression.
+	// It might be used by a creature that is not loaded in this patch.
+	QueryResult* result = WorldDatabase.Query("SELECT vendor_id FROM creature_template WHERE vendor_id > 0");
+
+	Field* fields;
+
+	if (result)
+	{
+		do
+		{
+			fields = result->Fetch();
+			uint32 vendorId = fields[0].GetUInt32();
+			if (vendor_ids.find(vendorId) != vendor_ids.end())
+				vendor_ids.erase(vendorId);
+		} while (result->NextRow());
+		delete result;
+	}
+
+	for (std::set<uint32>::const_iterator vItr = vendor_ids.begin(); vItr != vendor_ids.end(); ++vItr)
+		sLog.outErrorDb("Table `npc_vendor_template` has vendor template %u not used by any vendors ", *vItr);
+}
 void ObjectMgr::LoadNpcGossips()
 {
 
@@ -8226,7 +8277,6 @@ void ObjectMgr::LoadNpcGossips()
     sLog.outString();
     sLog.outString(">> Loaded %d NpcTextId ", count);
 }
-
 void ObjectMgr::LoadGossipMenu()
 {
     m_mGossipMenusMap.clear();

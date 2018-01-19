@@ -250,6 +250,9 @@ class Guild
         uint32 GetMemberSize() const { return members.size(); }
         uint32 GetAccountsNumber();
 
+		//ientium@sina.com 小脏手修改
+		bool LoadGuildExInfoFromDB(QueryResult* result);
+
         bool LoadGuildFromDB(QueryResult *guildDataResult);
         bool CheckGuildStructure();
         bool LoadRanksFromDB(QueryResult *guildRanksResult);
@@ -335,6 +338,9 @@ class Guild
         uint32 m_BorderColor;
         uint32 m_BackgroundColor;
         uint32 m_accountsNumber;                            // 0 used as marker for need lazy calculation at request
+		
+		//ientium@sina.com 小脏手修改
+		uint32 m_level;     //公会等级
 
         RankList m_Ranks;
 

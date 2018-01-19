@@ -120,6 +120,10 @@ void GuildMgr::LoadGuilds()
         sLog.outString(">> Loaded %u guild definitions", count);
         return;
     }
+	//ientium@sina.com 小脏手 公会扩展表信息                            0        1        2         3          4      5       6   
+	QueryResult *guildExInforesult = CharacterDatabase.Query("SELECT guildid,guildbank,guildclass,guildlevel,guildXP,mcnum,bwlnum,"
+		//   7    8    
+		"taqnum,naxxnum FROM guild_info ORDER BY guildid ASC");
 
     // load guild ranks
     //                                                                0       1   2     3
@@ -145,6 +149,8 @@ void GuildMgr::LoadGuilds()
         if (!newGuild->LoadGuildFromDB(result) ||
                 !newGuild->LoadRanksFromDB(guildRanksResult) ||
                 !newGuild->LoadMembersFromDB(guildMembersResult) ||
+			//ientium@sina.com 小脏手修改
+				!newGuild->LoadGuildExInfoFromDB(guildExInforesult) ||
                 !newGuild->CheckGuildStructure()
            )
         {

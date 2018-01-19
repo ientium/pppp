@@ -312,9 +312,14 @@ struct VendorItem
 {
     //VendorItem(uint32 _item, uint32 _maxcount, uint32 _incrtime)
     //    : item(_item), maxcount(_maxcount), incrtime(_incrtime) {}
-
+	//ientium@sina.com 小脏手修改
+	//商店部分扩展
 	VendorItem(uint32 _item, uint32 _maxcount, uint32 _incrtime, uint32 excost, uint16 itemtype, uint16 _itclass)
 		: item(_item), maxcount(_maxcount), incrtime(_incrtime), excost(excost), itemtype(itemtype), itclass(_itclass) {}
+	//公会级商店记录
+	VendorItem(uint32 _item, uint32 _maxcount, uint32 _incrtime, uint32 excost, uint16 itemtype, uint16 _itclass, uint16 _itlevel)
+		: item(_item), maxcount(_maxcount), incrtime(_incrtime), excost(excost), itemtype(itemtype), itclass(_itclass), itlevel(_itlevel) {}
+	//VIP商店
 	VendorItem(uint32 _item, uint32 _maxcount, uint32 _incrtime)
 		: item(_item), maxcount(_maxcount), incrtime(_incrtime), excost(0), itemtype(0), itclass(0) {}
 	//ientium@sina.com 小脏手 
@@ -328,6 +333,7 @@ struct VendorItem
 
 	uint16 itemtype;                                           //商店类型 0普通 1VIP 2公会
 	uint16 itclass;                                           //职业类别 ，0为不分职业
+	uint16 itlevel;                                           //当type为2时 ，公会等级
 
 
 };
@@ -348,11 +354,13 @@ struct VendorItemData
     {
         m_items.push_back(new VendorItem(item, maxcount, ptime));
     }
+	//ientium@sina.com 小脏手 
 	//VIPInfo商店设定
-	void AddItem(uint32 item, uint32 maxcount, uint32 ptime, uint32 excost, uint16 itemtype, uint16 _itclass)
+	void AddItem(uint32 item, uint32 maxcount, uint32 ptime, uint32 excost, uint16 itemtype, uint16 _itclass, uint16 _itlevel)
 	{
-		m_items.push_back(new VendorItem(item, maxcount, ptime, excost, itemtype, _itclass));
+		m_items.push_back(new VendorItem(item, maxcount, ptime, excost, itemtype, _itclass ,_itlevel));
 	}
+
     bool RemoveItem( uint32 item_id );
     VendorItem const* FindItem(uint32 item_id) const;
     size_t FindItemSlot(uint32 item_id) const;

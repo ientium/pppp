@@ -641,8 +641,8 @@ void World::LoadConfigSettings(bool reload)
     setConfigMinMax(CONFIG_UINT32_MAINTENANCE_DAY, "MaintenanceDay", 4, 0, 6);
 
     setConfig(CONFIG_BOOL_ALL_TAXI_PATHS, "AllFlightPaths", false);
-	//ientium@sina.com Ğ¡ÔàÊÖĞŞ¸Ä
-	//Ë³·É¿ª¹Ø²ÎÊı
+	//ientium@sina.com å°è„æ‰‹ä¿®æ”¹
+	//é¡ºé£å¼€å…³å‚æ•°
 	setConfig(CONFIG_BOLL_INSTANT_TAXI, "InstantFlightPaths", false);
 
     setConfig(CONFIG_BOOL_INSTANCE_IGNORE_LEVEL, "Instance.IgnoreLevel", false);
@@ -1469,6 +1469,9 @@ void World::SetInitialWorldSettings()
 
     sLog.outString("Loading Vendors...");
     sObjectMgr.LoadVendorTemplates();                       // must be after load ItemTemplate
+	//ientium@sina.com å°è„æ‰‹ å…¬ä¼šå•†åº—
+	sObjectMgr.LoadVendorGuildTemplates();
+	sObjectMgr.LoadVendorTemplates();                       // must be after load ItemTemplate
     sObjectMgr.LoadVendors();                               // must be after load CreatureTemplate, VendorTemplate, and ItemTemplate
 
     sLog.outString("Loading Trainers...");

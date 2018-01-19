@@ -15111,6 +15111,8 @@ void Player::_LoadVIPInfo(QueryResult* result)
 		}
 
 		memberVInfo.totaltime = fields[3].GetUInt32();
+		memberVInfo.guild_reputation =fields[4].GetUInt32(); //公会声望
+		memberVInfo.guildtime = fields[5].GetUInt32(); //加入公会日期
 		memberVInfo.costvipcoin = 0;
 		memberVInfo.costgeneralcoin = 0;
 		
@@ -17730,7 +17732,7 @@ bool Player::BuyItemFromVendor(ObjectGuid vendorGuid, uint32 item, uint8 count, 
 			LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
 			break;
 		case 1:
-			uint32 price = crItem->excost * count;
+			price = crItem->excost * count;
 			DEBUG_LOG("WORLD: BuyItemFromVendor - CostA %d.", crItem->excost* count);
 			if (getVipInfo(-1) < price)
 			{
@@ -17739,9 +17741,17 @@ bool Player::BuyItemFromVendor(ObjectGuid vendorGuid, uint32 item, uint8 count, 
 			}
 			costVipCoin(2, price);  //混合扣分
 			break;
+		//公会商店购买
+		case 2:
+			//ecost为公会声望
+			//判断公会声望
+			LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
+			break;
 
 		}
+		
 
+		
 
         //LogModifyMoney(-int32(price), "BuyItem", vendorGuid, item);
 

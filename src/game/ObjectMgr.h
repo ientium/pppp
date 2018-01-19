@@ -911,7 +911,9 @@ class ObjectMgr
 
         void LoadGossipMenu();
         void LoadGossipMenuItems();
-
+		//ientium@sina.com 小脏手  
+		//公会专用商店
+		void LoadVendorGuildTemplates();
         void LoadVendorTemplates();
         void LoadVendors() { LoadVendors("npc_vendor", false); }
         void LoadTrainerTemplates();

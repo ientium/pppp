@@ -286,6 +286,17 @@ void Guild::SetGINFO(std::string ginfo)
     CharacterDatabase.PExecute("UPDATE guild SET info='%s' WHERE guildid='%u'", ginfo.c_str(), m_Id);
 }
 
+//ientium@sina.com 小脏手修改
+//获取公会自定义扩展信息
+
+bool Guild::LoadGuildExInfoFromDB(QueryResult *guildDataResult) 
+{
+	if (!guildDataResult)
+		return false;
+
+	Field *fields = guildDataResult->Fetch();
+	m_level = fields[0].GetUInt32();
+}
 bool Guild::LoadGuildFromDB(QueryResult *guildDataResult)
 {
     if (!guildDataResult)

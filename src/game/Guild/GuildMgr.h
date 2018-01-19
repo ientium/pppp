@@ -94,7 +94,10 @@ public:
 
     ~Petition();
 
+
+
     bool LoadFromDB(QueryResult* result);
+
     void Delete();
     void SaveToDB();
 

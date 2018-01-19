@@ -735,7 +735,7 @@ std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi);
 
 struct MemberVIPInfo
 {
-	MemberVIPInfo() : vipcoin(0), generalcoin(0), activateTaxiTime(0), totaltime(0), costvipcoin(0), costgeneralcoin(0), lastupdate(0), multiplyingexp(1){}
+	MemberVIPInfo() : vipcoin(0), generalcoin(0), activateTaxiTime(0), totaltime(0), costvipcoin(0), costgeneralcoin(0), lastupdate(0), multiplyingexp(1), guild_reputation(0), guildtime(0){}
 	uint32 vipcoin;
 	uint32 generalcoin;
 	uint32 activateTaxiTime;
@@ -744,6 +744,8 @@ struct MemberVIPInfo
 	int32 costgeneralcoin; //花费的普通generalcoin
 	uint32 lastupdate;//最后查询时间
 	int32 multiplyingexp; //经验倍率
+	int32 guild_reputation;//公会声望
+	uint32 guildtime;  //加入公会日期
 };
 
 
